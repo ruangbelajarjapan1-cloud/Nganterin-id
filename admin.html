@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Nganterin</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+        .dashboard { max-width: 1000px; margin: 0 auto; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #0052FF; }
+        
+        table { width: 100%; background: white; border-collapse: collapse; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #0052FF; color: white; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; color: white; }
+        .bg-proses { background: #FFC107; color: black; }
+        .bg-selesai { background: #28A745; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h2>Dashboard Admin Pusat</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card"><h3>24</h3><p>Pesanan Hari Ini</p></div>
+            <div class="stat-card"><h3>12</h3><p>Driver Aktif</p></div>
+            <div class="stat-card"><h3>5</h3><p>Penjual Iklan</p></div>
+        </div>
+
+        <h3>Pesanan Berlangsung (Live)</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Pelanggan</th>
+                <th>Penjemputan (Merchant)</th>
+                <th>Driver</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>#001</td>
+                <td>Budi</td>
+                <td>Warung Soto Mbah Karto</td>
+                <td>Agus (Motor)</td>
+                <td><span class="badge bg-proses">Di Jalan</span></td>
+            </tr>
+            <tr>
+                <td>#002</td>
+                <td>Siti</td>
+                <td>Paket Dokumen</td>
+                <td>-</td>
+                <td><span class="badge bg-proses">Menunggu Driver</span></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
