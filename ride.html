@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nganterin Ride</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #0052FF; --bg-gray: #F4F6F9; --white: #FFFFFF; --text-dark: #1A1A1A; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #E5E5E5; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--bg-gray); min-height: 100vh; position: relative; overflow-x: hidden; }
+        
+        .top-bar { display: flex; align-items: center; padding: 20px; background: var(--white); }
+        .btn-back { font-size: 20px; color: var(--text-dark); text-decoration: none; margin-right: 15px; }
+        .top-bar h2 { font-size: 18px; color: var(--text-dark); }
 
+        /* Map Placeholder */
+        .map-area { height: 250px; background: url('https://via.placeholder.com/480x250?text=Peta+Lokasi+Boyolali') center/cover; }
+
+        /* Form Card */
+        .form-card { background: var(--white); border-radius: 20px 20px 0 0; padding: 25px 20px; margin-top: -20px; position: relative; min-height: 400px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        .location-input { display: flex; align-items: center; background: #F8F9FA; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; }
+        .location-input i { color: var(--primary); font-size: 20px; margin-right: 15px; width: 20px; text-align: center; }
+        .location-input input { border: none; background: transparent; width: 100%; font-size: 14px; outline: none; }
+        .location-input.dest i { color: #FF3D00; }
+
+        .price-estimate { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; margin: 20px 0; }
+        .price-estimate h3 { color: var(--text-dark); font-size: 18px; }
+
+        .btn-order { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,82,255,0.3); }
+
+        /* Bottom Sheet Login (Sama) */
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .overlay.active { opacity: 1; visibility: visible; }
+        .login-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--white); z-index: 100; padding: 30px 20px; border-radius: 25px 25px 0 0; transform: translateY(100%); transition: transform 0.4s ease-in-out; }
+        .login-sheet.active { transform: translateY(0); }
+        .input-group { margin-bottom: 15px; }
+        .input-group input { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 14px; outline: none; }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="top-bar">
+            <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+            <h2>Nganterin Ride 🏍️</h2>
+        </div>
+
+        <div class="map-area"></div>
+
+        <div class="form-card">
+            <div class="location-input">
+                <i class="fas fa-dot-circle"></i>
+                <input type="text" placeholder="Lokasi Jemput (Cth: Alun-alun Boyolali)">
+            </div>
+            <div class="location-input dest">
+                <i class="fas fa-map-marker-alt"></i>
+                <input type="text" placeholder="Tujuan Antar (Cth: Simpang Lima)">
+            </div>
+
+            <div class="price-estimate">
+                <div>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 3px;">Estimasi Harga</p>
+                    <p style="font-size: 11px; color: var(--primary);"><i class="fas fa-wallet"></i> Bayar Tunai / NganterinPay</p>
+                </div>
+                <h3>Rp 12.000</h3>
+            </div>
+
+            <button class="btn-order" onclick="prosesPesanMotor()">Pesan Motor Sekarang</button>
+        </div>
+
+        <!-- OVERLAY & BOTTOM SHEET LOGIN -->
+        <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
+        <div class="login-sheet" id="loginSheet">
+            <h2 style="color: #0052FF; margin-bottom: 5px;">Daftar / Masuk</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Tinggalkan detailmu agar driver mudah menghubungi!</p>
+            <div class="input-group"><input type="text" id="regName" placeholder="Nama Panggilan"></div>
+            <div class="input-group"><input type="tel" id="regPhone" placeholder="Nomor WhatsApp"></div>
+            <button class="btn-primary" onclick="simpanData()">Lanjut & Cari Driver</button>
+        </div>
+    </div>
+
+    <script>
+        function prosesPesanMotor() {
+            let user = localStorage.getItem("userName");
+            if(user) {
+                alert("Mencari Driver untuk " + user + "...\n(Nanti ini akan memicu Bot Telegram ke Grup Driver)");
+            } else {
+                document.getElementById("overlay").classList.add("active");
+                document.getElementById("loginSheet").classList.add("active");
+            }
+        }
+        function tutupLogin() {
+            document.getElementById("overlay").classList.remove("active");
+            document.getElementById("loginSheet").classList.remove("active");
+        }
+        function simpanData() {
+            let nama = document.getElementById("regName").value;
+            let hp = document.getElementById("regPhone").value;
+            if(nama === "" || hp === "") { alert("Isi nama dan nomor WA dulu ya!"); return; }
+            localStorage.setItem("userName", nama);
+            localStorage.setItem("userPhone", hp);
+            tutupLogin();
+            alert("Berhasil masuk! Mencari driver terdekat...");
+        }
+    </script>
+</body>
+</html>
