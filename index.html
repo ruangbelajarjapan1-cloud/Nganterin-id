@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nganterin - Aplikasi Super Lokal</title>
-    <!-- Font modern khas desain UI UX Figma -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -18,75 +17,28 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body { background-color: #E5E5E5; display: flex; justify-content: center; }
         
-        /* Layout Pembungkus HP */
         .app-container {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--bg-gray);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%; max-width: 480px; background-color: var(--bg-gray);
+            min-height: 100vh; position: relative; overflow-x: hidden;
         }
 
         /* ============================
-           HALAMAN AUTENTIKASI (LOGIN/DAFTAR)
-           ============================ */
-        .auth-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--white);
-            z-index: 100; /* Selalu di atas */
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            transition: transform 0.4s ease-in-out;
-        }
-
-        .auth-screen.hidden {
-            transform: translateY(100%); /* Efek slide ke bawah saat berhasil login */
-        }
-
-        .auth-header { margin-top: 50px; margin-bottom: 40px; text-align: center; }
-        .auth-header h1 { color: var(--primary); font-size: 28px; font-weight: 700; }
-        .auth-header p { color: var(--text-muted); font-size: 14px; }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
-        .input-group input {
-            width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px;
-            font-size: 14px; outline: none; transition: 0.3s;
-        }
-        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-
-        .btn-primary {
-            width: 100%; padding: 15px; background: var(--primary); color: var(--white);
-            border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
-            cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 82, 255, 0.3);
-        }
-
-        /* ============================
-           HALAMAN BERANDA (MAIN APP)
+           HALAMAN BERANDA (TAMPIL AWAL)
            ============================ */
         .home-screen { padding-bottom: 80px; }
 
-        /* Header ShopeeFood Style */
         .main-header {
-            background: var(--primary);
-            padding: 20px 20px 30px 20px;
-            border-radius: 0 0 25px 25px;
-            color: var(--white);
+            background: var(--primary); padding: 20px 20px 30px 20px;
+            border-radius: 0 0 25px 25px; color: var(--white);
         }
+        
         .search-bar {
             background: var(--white); padding: 12px 20px; border-radius: 30px;
             display: flex; align-items: center; gap: 10px; margin-top: 15px; color: var(--text-muted);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Saldo GoPay Style */
         .wallet-card {
             background: var(--white); margin: -20px 20px 20px 20px; padding: 15px 20px;
             border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
@@ -94,34 +46,24 @@
         }
         .wallet-info h4 { color: var(--text-dark); font-size: 16px; }
         .wallet-info p { color: var(--text-muted); font-size: 12px; }
-        .wallet-actions { display: flex; gap: 15px; color: var(--primary); font-size: 20px; }
 
-        /* Menu Grid (Gojek Style) */
-        .menu-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; text-align: center;
-        }
-        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--text-dark); }
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; text-align: center; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; cursor: pointer; }
         .menu-icon {
             width: 55px; height: 55px; background: var(--primary-light); color: var(--primary);
             border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 24px;
         }
 
-        /* Promo Scroll (ShopeeFood Style) */
-        .section-title { padding: 25px 20px 10px 20px; font-size: 16px; font-weight: 600; color: var(--text-dark); }
-        .promo-scroll {
-            display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px 20px; scroll-snap-type: x mandatory;
-        }
+        .section-title { padding: 25px 20px 10px 20px; font-size: 16px; font-weight: 600; }
+        .promo-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px 20px; scroll-snap-type: x mandatory; }
         .promo-scroll::-webkit-scrollbar { display: none; }
         .promo-card {
             min-width: 260px; background: var(--white); border-radius: 15px; scroll-snap-align: start;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04); overflow: hidden;
         }
-        .promo-img { width: 100%; height: 130px; object-fit: cover; background: #ddd; }
+        .promo-img { width: 100%; height: 130px; object-fit: cover; }
         .promo-content { padding: 12px; }
-        .promo-content h4 { font-size: 14px; margin-bottom: 5px; }
-        .promo-content p { font-size: 12px; color: var(--text-muted); }
 
-        /* Bottom Nav Sticky */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--white);
             display: flex; justify-content: space-around; padding: 15px 0;
@@ -129,45 +71,55 @@
         }
         .nav-item { color: #C4C4C4; font-size: 22px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
         .nav-item span { font-size: 10px; font-weight: 500; }
-        .nav-item.active { color: var(--primary); }
+
+        /* ============================
+           BOTTOM SHEET LOGIN (POP-UP)
+           ============================ */
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 99;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .overlay.active { opacity: 1; visibility: visible; }
+
+        .login-sheet {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: var(--white); z-index: 100;
+            padding: 30px 20px; border-radius: 25px 25px 0 0;
+            transform: translateY(100%); transition: transform 0.4s ease-in-out;
+        }
+        .login-sheet.active { transform: translateY(0); }
+
+        .login-sheet h2 { color: var(--primary); font-size: 24px; margin-bottom: 5px; }
+        .login-sheet p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group input {
+            width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px;
+            font-size: 14px; outline: none; transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--primary); }
+
+        .btn-primary {
+            width: 100%; padding: 15px; background: var(--primary); color: var(--white);
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         
-        <!-- LAYAR AUTENTIKASI (LOGIN/REGISTER) -->
-        <div class="auth-screen" id="authScreen">
-            <div class="auth-header">
-                <h1>Nganterin</h1>
-                <p>Daftar atau masuk untuk mulai memesan</p>
-            </div>
-            
-            <div class="input-group">
-                <label>Nama Lengkap</label>
-                <input type="text" id="regName" placeholder="Contoh: Budi Santoso">
-            </div>
-            <div class="input-group">
-                <label>Nomor WhatsApp</label>
-                <input type="tel" id="regPhone" placeholder="0812xxxxxx">
-            </div>
-            
-            <button class="btn-primary" onclick="masukAplikasi()">Daftar & Masuk</button>
-            <p style="text-align: center; margin-top: 20px; font-size: 12px; color: var(--text-muted);">
-                Dengan masuk, Anda menyetujui Syarat & Ketentuan kami.
-            </p>
-        </div>
-
-        <!-- LAYAR BERANDA (TERSEMBUNYI DI BAWAH LAYAR LOGIN) -->
+        <!-- HALAMAN BERANDA -->
         <div class="home-screen">
-            
             <div class="main-header">
-                <p style="font-size: 12px; opacity: 0.9;">Lokasi Anda Saat Ini <i class="fas fa-chevron-down"></i></p>
-                <h3 style="font-size: 16px; margin-top: 2px;">Jl. Merdeka Raya, Boyolali</h3>
+                <!-- Teks ini akan berubah otomatis jika user sudah login -->
+                <p id="greetingSub" style="font-size: 12px; opacity: 0.9;">Eksplorasi Area</p>
+                <h3 id="greetingName" style="font-size: 16px; margin-top: 2px;">Boyolali & Sekitarnya <i class="fas fa-chevron-down"></i></h3>
                 
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <span style="font-size: 14px;">Mau makan apa hari ini?</span>
+                    <span style="font-size: 14px;">Cari makanan atau toko...</span>
                 </div>
             </div>
 
@@ -176,66 +128,105 @@
                     <p>Saldo NganterinPay</p>
                     <h4>Rp 0</h4>
                 </div>
-                <div class="wallet-actions">
-                    <i class="fas fa-arrow-up"></i>
-                    <i class="fas fa-history"></i>
-                </div>
             </div>
 
+            <!-- Jika menu di klik, sistem akan mengecek apakah user sudah login -->
             <div class="menu-grid">
-                <div class="menu-item"><div class="menu-icon"><i class="fas fa-motorcycle"></i></div>Ride</div>
-                <div class="menu-item"><div class="menu-icon"><i class="fas fa-utensils"></i></div>Food</div>
-                <div class="menu-item"><div class="menu-icon"><i class="fas fa-box"></i></div>Send</div>
-                <div class="menu-item"><div class="menu-icon"><i class="fas fa-shopping-basket"></i></div>Mart</div>
+                <div class="menu-item" onclick="cekAkses('Ride')"><div class="menu-icon"><i class="fas fa-motorcycle"></i></div>Ride</div>
+                <div class="menu-item" onclick="cekAkses('Food')"><div class="menu-icon"><i class="fas fa-utensils"></i></div>Food</div>
+                <div class="menu-item" onclick="cekAkses('Send')"><div class="menu-icon"><i class="fas fa-box"></i></div>Send</div>
+                <div class="menu-item" onclick="cekAkses('Mart')"><div class="menu-icon"><i class="fas fa-shopping-basket"></i></div>Mart</div>
             </div>
 
-            <div class="section-title">Rekomendasi Terdekat 🤤</div>
+            <div class="section-title">Promo Hari Ini 🔥</div>
             <div class="promo-scroll">
-                <div class="promo-card">
-                    <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="promo-img" alt="Promo">
-                    <div class="promo-content">
-                        <h4>Mie Gacoan Boyolali</h4>
-                        <p><i class="fas fa-star" style="color: #FFD700;"></i> 4.8 • 1.2 km</p>
-                    </div>
-                </div>
-                <div class="promo-card">
-                    <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="promo-img" alt="Promo">
-                    <div class="promo-content">
-                        <h4>Ayam Penyet Surabaya</h4>
-                        <p><i class="fas fa-star" style="color: #FFD700;"></i> 4.6 • 2.5 km</p>
-                    </div>
+                <div class="promo-card" onclick="cekAkses('Promo')">
+                    <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=500&q=60" class="promo-img" alt="Promo">
+                    <div class="promo-content"><h4>Diskon Ongkir 50%</h4></div>
                 </div>
             </div>
-
         </div>
 
-        <!-- BOTTOM NAVIGATION -->
         <nav class="bottom-nav">
             <a href="#" class="nav-item active"><i class="fas fa-home"></i><span>Beranda</span></a>
-            <a href="#" class="nav-item"><i class="fas fa-clipboard-list"></i><span>Pesanan</span></a>
-            <a href="#" class="nav-item"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
-            <a href="#" class="nav-item"><i class="fas fa-user"></i><span>Profil</span></a>
+            <a href="#" class="nav-item" onclick="cekAkses('Pesanan')"><i class="fas fa-clipboard-list"></i><span>Pesanan</span></a>
+            <a href="#" class="nav-item" onclick="cekAkses('Profil')"><i class="fas fa-user"></i><span>Profil</span></a>
         </nav>
+
+        <!-- OVERLAY & BOTTOM SHEET LOGIN -->
+        <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
+        
+        <div class="login-sheet" id="loginSheet">
+            <h2>Daftar / Masuk</h2>
+            <p>Yuk daftar dulu biar gampang pesannya!</p>
+            
+            <div class="input-group">
+                <input type="text" id="regName" placeholder="Nama Panggilan (Misal: Budi)">
+            </div>
+            <div class="input-group">
+                <input type="tel" id="regPhone" placeholder="Nomor WhatsApp">
+            </div>
+            
+            <button class="btn-primary" onclick="prosesDaftar()">Lanjut</button>
+        </div>
 
     </div>
 
-    <!-- Script Sederhana untuk Efek SPA (Single Page Application) -->
+    <!-- LOGIKA JAVASCRIPT -->
     <script>
-        function masukAplikasi() {
-            const nama = document.getElementById('regName').value;
-            const noHp = document.getElementById('regPhone').value;
+        // Berjalan otomatis saat web dibuka untuk mengecek memori HP
+        window.onload = function() {
+            let namaUser = localStorage.getItem("userName");
+            if (namaUser) {
+                // Jika sudah pernah daftar, ubah sapaan di header
+                document.getElementById("greetingSub").innerText = "Selamat datang kembali,";
+                document.getElementById("greetingName").innerHTML = namaUser + " 👋";
+            }
+        };
+
+        // Fungsi mengecek apakah user boleh masuk ke menu
+        function cekAkses(namaMenu) {
+            let sudahDaftar = localStorage.getItem("userName");
             
-            // Validasi sederhana
-            if(nama === "" || noHp === "") {
-                alert("Mohon isi Nama dan Nomor WhatsApp terlebih dahulu!");
+            if (sudahDaftar) {
+                // Jika sudah daftar, izinkan masuk ke halaman menu
+                alert("Membuka halaman " + namaMenu + " untuk " + sudahDaftar);
+                // Nanti di sini kita arahkan ke halaman (misal: window.location.href = 'food.html')
+            } else {
+                // Jika belum, munculkan form pendaftaran dari bawah
+                document.getElementById("overlay").classList.add("active");
+                document.getElementById("loginSheet").classList.add("active");
+            }
+        }
+
+        // Menutup form jika user menekan area luar (overlay)
+        function tutupLogin() {
+            document.getElementById("overlay").classList.remove("active");
+            document.getElementById("loginSheet").classList.remove("active");
+        }
+
+        // Menyimpan data pendaftaran ke memori HP
+        function prosesDaftar() {
+            let nama = document.getElementById("regName").value;
+            let hp = document.getElementById("regPhone").value;
+
+            if (nama === "" || hp === "") {
+                alert("Isi nama dan nomor WA dulu ya!");
                 return;
             }
 
-            // Menyembunyikan layar login dengan efek slide
-            document.getElementById('authScreen').classList.add('hidden');
+            // Simpan ke memori lokal browser HP (localStorage)
+            localStorage.setItem("userName", nama);
+            localStorage.setItem("userPhone", hp);
+
+            // Tutup form
+            tutupLogin();
+
+            // Ubah header otomatis tanpa perlu refresh
+            document.getElementById("greetingSub").innerText = "Selamat datang,";
+            document.getElementById("greetingName").innerHTML = nama + " 👋";
             
-            // Nanti di sini kita bisa menambahkan kode untuk menyimpan data ke Google Sheets
-            console.log("User Baru:", nama, noHp);
+            alert("Berhasil mendaftar! Sekarang Anda bisa memesan layanan.");
         }
     </script>
 </body>
