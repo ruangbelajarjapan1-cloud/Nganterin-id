@@ -3,42 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mitra Driver - Nganterin</title>
+    <title>Mitra Nganterin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background: #222; margin: 0; color: white; }
-        .driver-container { max-width: 480px; margin: 0 auto; background: #111; min-height: 100vh; padding: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #121212; color: white; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: #1E1E1E; min-height: 100vh; padding: 20px; position: relative; }
         
-        .status-toggle { background: #333; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-        .btn-online { background: #00C853; color: white; border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 30px; width: 100%; cursor: pointer; }
-        
-        .income-card { background: #1A1A1A; border: 1px solid #333; padding: 20px; border-radius: 12px; text-align: center; }
-        .income-card h1 { color: #00C853; margin: 10px 0 0 0; }
-        
-        .order-alert { background: #FF3D00; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; /* Akan muncul via JS saat ada order */ }
-        .btn-terima { background: white; color: #FF3D00; width: 100%; padding: 15px; font-size: 20px; font-weight: bold; border: none; border-radius: 8px; margin-top: 15px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h2 { color: #0052FF; font-size: 20px; }
+        .profile-img { width: 40px; height: 40px; background: #333; border-radius: 50%; }
+
+        /* Tombol Online/Offline */
+        .status-toggle { background: #2C2C2C; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+        .btn-status { width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-status.offline { background: #444; color: #aaa; }
+        .btn-status.online { background: #00C853; color: white; box-shadow: 0 0 15px rgba(0, 200, 83, 0.4); }
+
+        /* Kartu Pendapatan */
+        .income-card { background: linear-gradient(135deg, #0052FF, #003BB5); padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+        .income-card p { font-size: 14px; opacity: 0.8; margin-bottom: 5px; }
+        .income-card h1 { font-size: 32px; margin-bottom: 10px; }
+
+        /* Pop-up Order Masuk (Simulasi) */
+        .order-popup { background: white; color: black; padding: 20px; border-radius: 15px; margin-top: 20px; border-left: 8px solid #FF3D00; }
+        .order-popup h3 { color: #FF3D00; margin-bottom: 10px; font-size: 18px; }
+        .order-detail { font-size: 14px; margin-bottom: 15px; color: #333; }
+        .btn-terima { width: 100%; padding: 15px; background: #FF3D00; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; }
     </style>
 </head>
 <body>
-    <div class="driver-container">
+    <div class="app-container">
+        <div class="header">
+            <h2>Nganterin Driver</h2>
+            <div class="profile-img"></div>
+        </div>
+
         <div class="status-toggle">
-            <p>Status Anda saat ini</p>
-            <button class="btn-online">ONLINE - SIAP MENERIMA ORDER</button>
+            <p style="margin-bottom: 10px; font-size: 14px; color: #aaa;">Ketuk untuk mulai mencari order</p>
+            <button class="btn-status offline" id="statusBtn" onclick="toggleStatus()">MENYALA ABANGKU</button>
         </div>
 
         <div class="income-card">
             <p>Pendapatan Hari Ini</p>
             <h1>Rp 145.000</h1>
-            <p style="font-size: 12px; color: #888;">Dari 7 Tarikan</p>
+            <p style="font-size: 12px;"><i class="fas fa-check-circle"></i> 8 Order Selesai</p>
         </div>
 
-        <!-- Pop up jika ada pesanan masuk -->
-        <div class="order-alert" style="display: block;"> <!-- Ubah display none untuk menyembunyikan -->
+        <div class="order-popup" style="display: block;">
             <h3>🚨 ORDER MASUK!</h3>
-            <p><strong>Jemput:</strong> Susu Segar Mas Boy</p>
-            <p><strong>Antar ke:</strong> Jl. Pandanaran No. 10</p>
-            <p><strong>Ongkir:</strong> Rp 8.000</p>
+            <div class="order-detail">
+                <p><strong><i class="fas fa-store"></i> Jemput:</strong> Mie Gacoan Boyolali</p>
+                <p><strong><i class="fas fa-map-marker-alt"></i> Antar:</strong> Jl. Merdeka No. 10</p>
+                <p style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #00C853;">Ongkir: Rp 12.000</p>
+            </div>
             <button class="btn-terima">TERIMA PESANAN</button>
         </div>
     </div>
+
+    <script>
+        // Efek tombol online
+        function toggleStatus() {
+            let btn = document.getElementById("statusBtn");
+            if (btn.classList.contains("offline")) {
+                btn.classList.remove("offline");
+                btn.classList.add("online");
+                btn.innerText = "ONLINE (MENCARI ORDER)";
+            } else {
+                btn.classList.remove("online");
+                btn.classList.add("offline");
+                btn.innerText = "MENYALA ABANGKU";
+            }
+        }
+    </script>
 </body>
 </html>
