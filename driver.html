@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mitra Driver - Nganterin</title>
+    <style>
+        body { font-family: sans-serif; background: #222; margin: 0; color: white; }
+        .driver-container { max-width: 480px; margin: 0 auto; background: #111; min-height: 100vh; padding: 20px; }
+        
+        .status-toggle { background: #333; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .btn-online { background: #00C853; color: white; border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 30px; width: 100%; cursor: pointer; }
+        
+        .income-card { background: #1A1A1A; border: 1px solid #333; padding: 20px; border-radius: 12px; text-align: center; }
+        .income-card h1 { color: #00C853; margin: 10px 0 0 0; }
+        
+        .order-alert { background: #FF3D00; padding: 20px; border-radius: 12px; margin-top: 20px; display: none; /* Akan muncul via JS saat ada order */ }
+        .btn-terima { background: white; color: #FF3D00; width: 100%; padding: 15px; font-size: 20px; font-weight: bold; border: none; border-radius: 8px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="driver-container">
+        <div class="status-toggle">
+            <p>Status Anda saat ini</p>
+            <button class="btn-online">ONLINE - SIAP MENERIMA ORDER</button>
+        </div>
+
+        <div class="income-card">
+            <p>Pendapatan Hari Ini</p>
+            <h1>Rp 145.000</h1>
+            <p style="font-size: 12px; color: #888;">Dari 7 Tarikan</p>
+        </div>
+
+        <!-- Pop up jika ada pesanan masuk -->
+        <div class="order-alert" style="display: block;"> <!-- Ubah display none untuk menyembunyikan -->
+            <h3>🚨 ORDER MASUK!</h3>
+            <p><strong>Jemput:</strong> Susu Segar Mas Boy</p>
+            <p><strong>Antar ke:</strong> Jl. Pandanaran No. 10</p>
+            <p><strong>Ongkir:</strong> Rp 8.000</p>
+            <button class="btn-terima">TERIMA PESANAN</button>
+        </div>
+    </div>
+</body>
+</html>
