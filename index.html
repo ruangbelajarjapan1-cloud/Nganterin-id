@@ -6,6 +6,8 @@
     <title>Nganterin - Aplikasi Super Lokal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+
     <style>
         :root {
             --primary: #0052FF;
@@ -238,5 +240,14 @@
             alert("Berhasil mendaftar! Sekarang Anda bisa memesan layanan.");
         }
     </script>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("Service Worker Terdaftar!"))
+        .catch(err => console.log("Gagal mendaftar Service Worker", err));
+    }
+</script>
+
+    
 </body>
 </html>
