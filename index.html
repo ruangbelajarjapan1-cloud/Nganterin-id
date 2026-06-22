@@ -3,52 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nganterin - Aplikasi Anda</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Mengambil ikon gratis dari FontAwesome -->
+    <title>Nganterin - Beranda</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS Dasar & Elegan */
+        body { font-family: sans-serif; background: #F7F9FC; margin: 0; padding-bottom: 60px; }
+        .app-container { max-width: 480px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
+        .header { background: #0052FF; color: white; padding: 20px; border-radius: 0 0 15px 15px; }
+        
+        /* Banner Iklan Penjual */
+        .promo-section { padding: 20px; }
+        .promo-scroll { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; }
+        .promo-scroll::-webkit-scrollbar { display: none; }
+        .promo-card { min-width: 250px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        .promo-img { width: 100%; height: 120px; background: #ddd; object-fit: cover; }
+        .promo-info { padding: 10px; }
+        .promo-info h4 { margin: 0 0 5px 0; color: #333; }
+        .tag-iklan { font-size: 10px; background: #FFD700; padding: 2px 6px; border-radius: 4px; color: #000; }
+    </style>
 </head>
 <body>
+    <div class="app-container">
+        <div class="header">
+            <h2>Nganterin 🚀</h2>
+            <p>Mau jajan apa di Boyolali hari ini?</p>
+        </div>
 
-    <!-- Header & Profil -->
-    <header class="header">
-        <div class="user-info">
-            <h2>Halo, Budi! 👋</h2>
-            <p>Mau kirim apa hari ini?</p>
+        <div class="promo-section">
+            <h3>Rekomendasi & Iklan Pilihan</h3>
+            <div class="promo-scroll">
+                <!-- Data ini nanti akan ditarik otomatis dari Google Sheets -->
+                <div class="promo-card">
+                    <img src="https://via.placeholder.com/250x120" class="promo-img" alt="Soto">
+                    <div class="promo-info">
+                        <h4><span class="tag-iklan">Ad</span> Warung Soto Mbah Karto</h4>
+                        <p style="font-size: 12px; color: #666; margin:0;">Diskon ongkir 50% hari ini!</p>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <img src="https://via.placeholder.com/250x120" class="promo-img" alt="Susu Segar">
+                    <div class="promo-info">
+                        <h4><span class="tag-iklan">Ad</span> Susu Segar Mas Boy</h4>
+                        <p style="font-size: 12px; color: #666; margin:0;">Beli 2 Gratis 1 Roti Bakar</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="balance-card">
-            <span>Saldo Pay</span>
-            <h3>Rp 50.000</h3>
-        </div>
-    </header>
-
-    <!-- Menu Utama (Grid) -->
-    <main class="services">
-        <div class="service-item">
-            <div class="icon-box"><i class="fas fa-motorcycle"></i></div>
-            <span>Ride</span>
-        </div>
-        <div class="service-item">
-            <div class="icon-box"><i class="fas fa-box"></i></div>
-            <span>Send</span>
-        </div>
-        <div class="service-item">
-            <div class="icon-box"><i class="fas fa-hamburger"></i></div>
-            <span>Food</span>
-        </div>
-        <div class="service-item">
-            <div class="icon-box"><i class="fas fa-shopping-bag"></i></div>
-            <span>Mart</span>
-        </div>
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active"><i class="fas fa-home"></i></a>
-        <a href="#" class="nav-item"><i class="fas fa-receipt"></i></a>
-        <a href="#" class="nav-item"><i class="fas fa-comment-dots"></i></a>
-        <a href="#" class="nav-item"><i class="fas fa-user"></i></a>
-    </nav>
-
+    </div>
 </body>
 </html>
