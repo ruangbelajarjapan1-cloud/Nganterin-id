@@ -26,9 +26,7 @@
             min-height: 100vh; position: relative; overflow-x: hidden;
         }
 
-        /* ============================
-           HALAMAN BERANDA (TAMPIL AWAL)
-           ============================ */
+        /* HALAMAN BERANDA */
         .home-screen { padding-bottom: 80px; }
 
         .main-header {
@@ -50,7 +48,7 @@
         .wallet-info p { color: var(--text-muted); font-size: 12px; }
 
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; text-align: center; }
-        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; cursor: pointer; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-dark); }
         .menu-icon {
             width: 55px; height: 55px; background: var(--primary-light); color: var(--primary);
             border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 24px;
@@ -66,6 +64,7 @@
         .promo-img { width: 100%; height: 130px; object-fit: cover; }
         .promo-content { padding: 12px; }
 
+        /* BOTTOM NAV */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--white);
             display: flex; justify-content: space-around; padding: 15px 0;
@@ -73,10 +72,9 @@
         }
         .nav-item { color: #C4C4C4; font-size: 22px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
         .nav-item span { font-size: 10px; font-weight: 500; }
+        .nav-item.active { color: var(--primary); }
 
-        /* ============================
-           BOTTOM SHEET LOGIN (POP-UP)
-           ============================ */
+        /* BOTTOM SHEET LOGIN */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 99;
@@ -112,10 +110,8 @@
 
     <div class="app-container">
         
-        <!-- HALAMAN BERANDA -->
         <div class="home-screen">
             <div class="main-header">
-                <!-- Teks ini akan berubah otomatis jika user sudah login -->
                 <p id="greetingSub" style="font-size: 12px; opacity: 0.9;">Eksplorasi Area</p>
                 <h3 id="greetingName" style="font-size: 16px; margin-top: 2px;">Boyolali & Sekitarnya <i class="fas fa-chevron-down"></i></h3>
                 
@@ -132,8 +128,7 @@
                 </div>
             </div>
 
-            <!-- Jika menu di klik, sistem akan mengecek apakah user sudah login -->
-             <div class="menu-grid">
+            <div class="menu-grid">
                 <a href="ride.html" class="menu-item" style="text-decoration:none;">
                     <div class="menu-icon"><i class="fas fa-motorcycle"></i></div>Ride
                 </a>
@@ -148,7 +143,6 @@
                 </a>
             </div>
 
-
             <div class="section-title">Promo Hari Ini 🔥</div>
             <div class="promo-scroll">
                 <div class="promo-card" onclick="cekAkses('Promo')">
@@ -161,10 +155,9 @@
         <nav class="bottom-nav">
             <a href="#" class="nav-item active"><i class="fas fa-home"></i><span>Beranda</span></a>
             <a href="#" class="nav-item" onclick="cekAkses('Pesanan')"><i class="fas fa-clipboard-list"></i><span>Pesanan</span></a>
-            <a href="profil.html" class="nav-item">⁠<i class="fas fa-user"></i><span>Profil</span></a>
+            <a href="profil.html" class="nav-item"><i class="fas fa-user"></i><span>Profil</span></a>
         </nav>
 
-        <!-- OVERLAY & BOTTOM SHEET LOGIN -->
         <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
         
         <div class="login-sheet" id="loginSheet">
@@ -183,40 +176,30 @@
 
     </div>
 
-    <!-- LOGIKA JAVASCRIPT -->
     <script>
-        // Berjalan otomatis saat web dibuka untuk mengecek memori HP
         window.onload = function() {
             let namaUser = localStorage.getItem("userName");
             if (namaUser) {
-                // Jika sudah pernah daftar, ubah sapaan di header
                 document.getElementById("greetingSub").innerText = "Selamat datang kembali,";
                 document.getElementById("greetingName").innerHTML = namaUser + " 👋";
             }
         };
 
-        // Fungsi mengecek apakah user boleh masuk ke menu
         function cekAkses(namaMenu) {
             let sudahDaftar = localStorage.getItem("userName");
-            
             if (sudahDaftar) {
-                // Jika sudah daftar, izinkan masuk ke halaman menu
                 alert("Membuka halaman " + namaMenu + " untuk " + sudahDaftar);
-                // Nanti di sini kita arahkan ke halaman (misal: window.location.href = 'food.html')
             } else {
-                // Jika belum, munculkan form pendaftaran dari bawah
                 document.getElementById("overlay").classList.add("active");
                 document.getElementById("loginSheet").classList.add("active");
             }
         }
 
-        // Menutup form jika user menekan area luar (overlay)
         function tutupLogin() {
             document.getElementById("overlay").classList.remove("active");
             document.getElementById("loginSheet").classList.remove("active");
         }
 
-        // Menyimpan data pendaftaran ke memori HP
         function prosesDaftar() {
             let nama = document.getElementById("regName").value;
             let hp = document.getElementById("regPhone").value;
@@ -226,28 +209,23 @@
                 return;
             }
 
-            // Simpan ke memori lokal browser HP (localStorage)
             localStorage.setItem("userName", nama);
             localStorage.setItem("userPhone", hp);
-
-            // Tutup form
             tutupLogin();
 
-            // Ubah header otomatis tanpa perlu refresh
             document.getElementById("greetingSub").innerText = "Selamat datang,";
             document.getElementById("greetingName").innerHTML = nama + " 👋";
-            
             alert("Berhasil mendaftar! Sekarang Anda bisa memesan layanan.");
         }
     </script>
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-        .then(() => console.log("Service Worker Terdaftar!"))
-        .catch(err => console.log("Gagal mendaftar Service Worker", err));
-    }
-</script>
-⁠<script src="app.js"></script>⁠
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("Service Worker Terdaftar!"))
+            .catch(err => console.log("Gagal mendaftar Service Worker", err));
+        }
+    </script>
+    <script src="app.js"></script>
     
 </body>
 </html>
