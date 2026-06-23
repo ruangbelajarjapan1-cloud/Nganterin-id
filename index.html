@@ -27,9 +27,7 @@
             min-height: 100vh; position: relative; overflow-x: hidden;
         }
 
-        /* ============================
-           1. SPLASH SCREEN ANIMATION
-           ============================ */
+        /* 1. SPLASH SCREEN ANIMATION */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -40,9 +38,7 @@
         .splash-logo i { font-size: 65px; margin-bottom: 15px; color: #FFD700; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* ============================
-           HALAMAN BERANDA UTAMA
-           ============================ */
+        /* HALAMAN BERANDA UTAMA */
         .home-screen { padding-bottom: 80px; }
 
         .main-header {
@@ -63,13 +59,11 @@
         .wallet-info h4 { color: var(--text-dark); font-size: 16px; }
         .wallet-info p { color: var(--text-muted); font-size: 12px; }
 
-        /* ============================
-           2. BANNER INSTALL PWA
-           ============================ */
+        /* 2. BANNER INSTALL PWA */
         .install-banner {
             background: linear-gradient(135deg, #0052FF, #003BB5); color: white; margin: 0 20px 20px 20px;
             padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 82, 255, 0.3); display: none; /* Disembunyikan sampai terdeteksi oleh JS */
+            box-shadow: 0 4px 15px rgba(0, 82, 255, 0.3); display: none;
         }
         .install-info { display: flex; align-items: center; gap: 12px; }
         .install-info i { font-size: 24px; color: #FFD700; }
@@ -95,7 +89,7 @@
 
         /* BOTTOM NAV */
         .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--white);
+            position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white);
             display: flex; justify-content: space-around; padding: 15px 0;
             box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50;
         }
@@ -103,46 +97,56 @@
         .nav-item span { font-size: 10px; font-weight: 500; }
         .nav-item.active { color: var(--primary); }
 
-        /* BOTTOM SHEET LOGIN */
+        /* ==========================================
+           BOTTOM SHEET LOGIN (KOREKSI POSISI FIXED)
+           ========================================== */
         .overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 99;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); z-index: 99;
             opacity: 0; visibility: hidden; transition: 0.3s;
         }
         .overlay.active { opacity: 1; visibility: visible; }
+        
         .login-sheet {
-            position: absolute; bottom: 0; left: 0; width: 100%;
+            position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;
+            width: 100%; max-width: 480px;
             background: var(--white); z-index: 100;
-            padding: 30px 20px; border-radius: 25px 25px 0 0;
-            transform: translateY(100%); transition: transform 0.4s ease-in-out;
+            padding: 30px 20px 40px 20px; /* Padding bawah ditambah agar tidak mepet layar */
+            border-radius: 25px 25px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efek membal elegan */
         }
         .login-sheet.active { transform: translateY(0); }
         .login-sheet h2 { color: var(--primary); font-size: 24px; margin-bottom: 5px; }
         .login-sheet p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
 
         .input-group { margin-bottom: 15px; }
-        .input-group input { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 14px; outline: none; transition: 0.3s; }
-        .input-group input:focus { border-color: var(--primary); }
-        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .input-group input { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 14px; outline: none; transition: 0.3s; background: #FAFAFA; }
+        .input-group input:focus { border-color: var(--primary); background: var(--white); }
+        .btn-primary { width: 100%; padding: 16px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 5px; box-shadow: 0 4px 15px rgba(0, 82, 255, 0.3); }
     </style>
 </head>
 <body>
 
     <div class="app-container">
 
+        <!-- SPLASH SCREEN ANIMASI (Layar Biru Awal) -->
         <div id="splash-screen">
             <div class="splash-logo"><i class="fas fa-motorcycle"></i></div>
             <h2 style="font-weight: 700; font-size: 28px; letter-spacing: 1px;">Nganterin</h2>
             <p style="font-size: 13px; opacity: 0.9; margin-top: 5px;">Aplikasi Kebanggaan Boyolali</p>
         </div>
         
+        <!-- HALAMAN BERANDA -->
         <div class="home-screen">
             <div class="main-header">
+                <!-- Sapaan Lokal -->
                 <p id="greetingSub" style="font-size: 12px; opacity: 0.9;">Eksplorasi Area</p>
                 <h3 id="greetingName" style="font-size: 16px; margin-top: 2px;">Boyolali & Sekitarnya <i class="fas fa-chevron-down"></i></h3>
                 
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
+                    <!-- Hyper-local Copywriting -->
                     <span style="font-size: 14px;">Mau jajan apa hari ini lur?</span>
                 </div>
             </div>
@@ -154,6 +158,7 @@
                 </div>
             </div>
 
+            <!-- BANNER INSTALL PWA CERDAS -->
             <div class="install-banner" id="installBanner">
                 <div class="install-info">
                     <i class="fas fa-cloud-download-alt"></i>
@@ -187,6 +192,17 @@
                     <div class="promo-content"><h4>Diskon Ongkir 50% Area Boyolali</h4></div>
                 </div>
             </div>
+            
+            <!-- MENU RAHASIA DEVELOPER (HAPUS SAAT RILIS) -->
+            <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; padding: 20px; border-top: 1px dashed #ccc;">
+                <p style="font-size: 12px; color: #888; margin-bottom: 10px;"><i class="fas fa-tools"></i> Navigasi Testing (Developer):</p>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <a href="admin.html" style="font-size: 12px; background: #333; color: white; padding: 5px 15px; border-radius: 15px; text-decoration: none;"><i class="fas fa-laptop"></i> Admin</a>
+                    <a href="driver.html" style="font-size: 12px; background: #00C853; color: white; padding: 5px 15px; border-radius: 15px; text-decoration: none;"><i class="fas fa-motorcycle"></i> App Driver</a>
+                    <a href="daftar-driver.html" style="font-size: 12px; background: #FF3D00; color: white; padding: 5px 15px; border-radius: 15px; text-decoration: none;"><i class="fas fa-file-signature"></i> Form Mitra</a>
+                </div>
+            </div>
+
         </div>
 
         <nav class="bottom-nav">
@@ -195,9 +211,12 @@
             <a href="profil.html" class="nav-item"><i class="fas fa-user"></i><span>Profil</span></a>
         </nav>
 
+        <!-- OVERLAY & BOTTOM SHEET LOGIN -->
         <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
         
         <div class="login-sheet" id="loginSheet">
+            <!-- Garis kecil di atas pop-up sebagai petunjuk visual (UX Idea) -->
+            <div style="width: 40px; height: 5px; background: #ddd; border-radius: 10px; margin: 0 auto 20px auto;"></div>
             <h2>Daftar / Masuk</h2>
             <p>Yuk daftar dulu biar gampang pesannya!</p>
             
@@ -208,11 +227,12 @@
                 <input type="tel" id="regPhone" placeholder="Nomor WhatsApp">
             </div>
             
-            <button class="btn-primary" onclick="prosesDaftar()">Lanjut</button>
+            <button class="btn-primary" onclick="prosesDaftar()">Lanjut & Masuk</button>
         </div>
 
     </div>
 
+    <!-- LOGIKA JAVASCRIPT -->
     <script>
         // FUNGSI 1: MENGHILANGKAN SPLASH SCREEN SETELAH 1.5 DETIK
         window.addEventListener('load', () => {
@@ -224,21 +244,16 @@
         // FUNGSI 2: BANNER INSTALL PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Mencegah Chrome memunculkan prompt otomatis yang kaku
             e.preventDefault();
-            // Menyimpan event agar bisa dipanggil nanti
             deferredPrompt = e;
-            // Menampilkan banner kustom kita
             document.getElementById('installBanner').style.display = 'flex';
         });
 
         function installPWA() {
             if (deferredPrompt) {
-                // Memunculkan prompt instalasi asli milik sistem HP
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('User menginstal aplikasi');
                         document.getElementById('installBanner').style.display = 'none';
                     }
                     deferredPrompt = null;
@@ -285,11 +300,11 @@
 
             document.getElementById("greetingSub").innerText = "Halo, sugeng rawuh";
             document.getElementById("greetingName").innerHTML = nama + " 👋";
-            // Sapaan Lokal
             alert("Sip! Berhasil mendaftar. Yuk pesen sekarang, Mas Kurir siap meluncur!");
         }
     </script>
     
+    <!-- REGISTRASI SERVICE WORKER -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
