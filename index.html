@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nganterin - Aplikasi Super Lokal</title>
+    <title>Nganterin - Aplikasi Kebanggaan Boyolali</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
@@ -11,6 +11,7 @@
     <style>
         :root {
             --primary: #0052FF;
+            --primary-dark: #003BB5;
             --primary-light: #E6EFFF;
             --bg-gray: #F4F6F9;
             --text-dark: #1A1A1A;
@@ -26,7 +27,22 @@
             min-height: 100vh; position: relative; overflow-x: hidden;
         }
 
-        /* HALAMAN BERANDA */
+        /* ============================
+           1. SPLASH SCREEN ANIMATION
+           ============================ */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; }
+        .splash-logo i { font-size: 65px; margin-bottom: 15px; color: #FFD700; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* ============================
+           HALAMAN BERANDA UTAMA
+           ============================ */
         .home-screen { padding-bottom: 80px; }
 
         .main-header {
@@ -47,6 +63,19 @@
         .wallet-info h4 { color: var(--text-dark); font-size: 16px; }
         .wallet-info p { color: var(--text-muted); font-size: 12px; }
 
+        /* ============================
+           2. BANNER INSTALL PWA
+           ============================ */
+        .install-banner {
+            background: linear-gradient(135deg, #0052FF, #003BB5); color: white; margin: 0 20px 20px 20px;
+            padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 82, 255, 0.3); display: none; /* Disembunyikan sampai terdeteksi oleh JS */
+        }
+        .install-info { display: flex; align-items: center; gap: 12px; }
+        .install-info i { font-size: 24px; color: #FFD700; }
+        .btn-install { background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 12px; cursor: pointer; }
+
+        /* MENU UTAMA */
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; text-align: center; }
         .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-dark); }
         .menu-icon {
@@ -81,7 +110,6 @@
             opacity: 0; visibility: hidden; transition: 0.3s;
         }
         .overlay.active { opacity: 1; visibility: visible; }
-
         .login-sheet {
             position: absolute; bottom: 0; left: 0; width: 100%;
             background: var(--white); z-index: 100;
@@ -89,26 +117,24 @@
             transform: translateY(100%); transition: transform 0.4s ease-in-out;
         }
         .login-sheet.active { transform: translateY(0); }
-
         .login-sheet h2 { color: var(--primary); font-size: 24px; margin-bottom: 5px; }
         .login-sheet p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
 
         .input-group { margin-bottom: 15px; }
-        .input-group input {
-            width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px;
-            font-size: 14px; outline: none; transition: 0.3s;
-        }
+        .input-group input { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 14px; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: var(--primary); }
-
-        .btn-primary {
-            width: 100%; padding: 15px; background: var(--primary); color: var(--white);
-            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;
-        }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
+
+        <div id="splash-screen">
+            <div class="splash-logo"><i class="fas fa-motorcycle"></i></div>
+            <h2 style="font-weight: 700; font-size: 28px; letter-spacing: 1px;">Nganterin</h2>
+            <p style="font-size: 13px; opacity: 0.9; margin-top: 5px;">Aplikasi Kebanggaan Boyolali</p>
+        </div>
         
         <div class="home-screen">
             <div class="main-header">
@@ -117,7 +143,7 @@
                 
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <span style="font-size: 14px;">Cari makanan atau toko...</span>
+                    <span style="font-size: 14px;">Mau jajan apa hari ini lur?</span>
                 </div>
             </div>
 
@@ -126,6 +152,17 @@
                     <p>Saldo NganterinPay</p>
                     <h4>Rp 0</h4>
                 </div>
+            </div>
+
+            <div class="install-banner" id="installBanner">
+                <div class="install-info">
+                    <i class="fas fa-cloud-download-alt"></i>
+                    <div>
+                        <h4 style="font-size: 14px;">Install Nganterin App</h4>
+                        <p style="font-size: 11px; opacity: 0.8;">Lebih cepat, hemat kuota!</p>
+                    </div>
+                </div>
+                <button onclick="installPWA()" class="btn-install">Install</button>
             </div>
 
             <div class="menu-grid">
@@ -143,11 +180,11 @@
                 </a>
             </div>
 
-            <div class="section-title">Promo Hari Ini 🔥</div>
+            <div class="section-title">Promo Khusus Hari Ini 🔥</div>
             <div class="promo-scroll">
                 <div class="promo-card" onclick="cekAkses('Promo')">
                     <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=500&q=60" class="promo-img" alt="Promo">
-                    <div class="promo-content"><h4>Diskon Ongkir 50%</h4></div>
+                    <div class="promo-content"><h4>Diskon Ongkir 50% Area Boyolali</h4></div>
                 </div>
             </div>
         </div>
@@ -177,10 +214,43 @@
     </div>
 
     <script>
+        // FUNGSI 1: MENGHILANGKAN SPLASH SCREEN SETELAH 1.5 DETIK
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+            }, 1500);
+        });
+
+        // FUNGSI 2: BANNER INSTALL PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Mencegah Chrome memunculkan prompt otomatis yang kaku
+            e.preventDefault();
+            // Menyimpan event agar bisa dipanggil nanti
+            deferredPrompt = e;
+            // Menampilkan banner kustom kita
+            document.getElementById('installBanner').style.display = 'flex';
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                // Memunculkan prompt instalasi asli milik sistem HP
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User menginstal aplikasi');
+                        document.getElementById('installBanner').style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        // FUNGSI 3: LOGIKA USER MEMORI DAN LOGIN
         window.onload = function() {
             let namaUser = localStorage.getItem("userName");
             if (namaUser) {
-                document.getElementById("greetingSub").innerText = "Selamat datang kembali,";
+                document.getElementById("greetingSub").innerText = "Halo, sugeng rawuh";
                 document.getElementById("greetingName").innerHTML = namaUser + " 👋";
             }
         };
@@ -213,11 +283,13 @@
             localStorage.setItem("userPhone", hp);
             tutupLogin();
 
-            document.getElementById("greetingSub").innerText = "Selamat datang,";
+            document.getElementById("greetingSub").innerText = "Halo, sugeng rawuh";
             document.getElementById("greetingName").innerHTML = nama + " 👋";
-            alert("Berhasil mendaftar! Sekarang Anda bisa memesan layanan.");
+            // Sapaan Lokal
+            alert("Sip! Berhasil mendaftar. Yuk pesen sekarang, Mas Kurir siap meluncur!");
         }
     </script>
+    
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
