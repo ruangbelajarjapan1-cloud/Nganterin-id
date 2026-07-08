@@ -260,15 +260,30 @@
             document.getElementById("loginSheet").classList.remove("active");
         }
 
-        function prosesDaftar() {
-            let nama = document.getElementById("regName").value;
-            let hp = document.getElementById("regPhone").value;
-            if (nama === "" || hp === "") { alert("Mohon lengkapi nama dan nomor WhatsApp."); return; }
-            localStorage.setItem("userName", nama);
-            localStorage.setItem("userPhone", hp);
-            tutupLogin();
-            document.getElementById("greetingName").innerHTML = nama + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
-        }
+      function prosesDaftar() {
+    let nama = document.getElementById("regName").value;
+    let hp = document.getElementById("regPhone").value;
+    
+    if (nama === "" || hp === "") { 
+        alert("Mohon lengkapi nama dan nomor WhatsApp."); 
+        return; 
+    }
+    
+    // 1. Simpan di memori HP
+    localStorage.setItem("userName", nama);
+    localStorage.setItem("userPhone", hp);
+    
+    // 2. KIRIM DATA KE GOOGLE SHEETS (Memanggil fungsi baru di app.js)
+    kirimDataUserBaru(nama, hp);
+    
+    tutupLogin();
+    
+    // Perbarui teks nama di beranda
+    let elemenNama = document.getElementById("greetingName");
+    if(elemenNama) {
+        elemenNama.innerHTML = nama + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
+    }
+}
     </script>
     
     <script>
