@@ -1,4 +1,4 @@
-const CACHE_NAME = "nganterin-v1";
+const CACHE_NAME = "nganterin-v2";
 const urlsToCache = [
   "./",
   "./index.html",
