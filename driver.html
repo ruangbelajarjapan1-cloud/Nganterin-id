@@ -32,12 +32,16 @@
 
         /* Pop-up Order Masuk */
         .order-popup { background: white; color: #1A1A1A; padding: 20px; border-radius: 16px; margin-top: 20px; border-left: 8px solid #DD6B20; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .order-popup h3 { color: #DD6B20; margin-bottom: 15px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;}
+        .order-popup h3 { color: #DD6B20; margin-bottom: 15px; font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center;}
         .order-detail { font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
         .order-detail p i { width: 20px; color: #718096; text-align: center; margin-right: 5px; }
         .ongkir-highlight { font-size: 16px; font-weight: 700; color: #1A7332; margin-top: 10px; display: inline-block; background: #E8F5E9; padding: 5px 10px; border-radius: 8px; }
-        .btn-terima { width: 100%; padding: 15px; background: #DD6B20; color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.3s; }
-        .btn-terima:active { transform: scale(0.98); }
+        
+        /* Tombol Aksi */
+        .action-buttons { display: flex; gap: 10px; }
+        .btn-terima { flex: 2; padding: 15px; background: #1A7332; color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; }
+        .btn-tolak { flex: 1; padding: 15px; background: #E2E8F0; color: #4A5568; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; }
+        .btn-terima:active, .btn-tolak:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -62,46 +66,19 @@
         </div>
 
         <div class="order-popup" id="notifOrder">
-            <h3><i class="fas fa-bell"></i> Pesanan Baru Masuk!</h3>
-            <div class="order-detail">
+            <h3><span><i class="fas fa-bell"></i> Pesanan Baru!</span> <span style="font-size: 12px; color: #718096; font-weight: normal;">Baru saja</span></h3>
+            <div class="order-detail" id="detailOrderData">
                 <p><i class="fas fa-store"></i> <strong>Jemput:</strong> Sate Sapi Pak Manto</p>
                 <p><i class="fas fa-map-marker-alt"></i> <strong>Antar:</strong> Jl. Merdeka No. 10 (Kantor Bupati)</p>
                 <div class="ongkir-highlight">Tarif: Rp 12.000</div>
             </div>
-            <button class="btn-terima" onclick="terimaOrder()">TERIMA PESANAN</button>
+            <div class="action-buttons">
+                <button class="btn-tolak" onclick="tolakOrder()">Abaikan</button>
+                <button class="btn-terima" onclick="terimaOrder()">TERIMA</button>
+            </div>
         </div>
     </div>
 
     <script src="driver.js"></script>
-    
-    <script>
-        // Logika tampilan untuk melengkapi driver.js
-        function toggleStatus() {
-            let btn = document.getElementById("statusBtn");
-            let notif = document.getElementById("notifOrder");
-
-            if (btn.classList.contains("offline")) {
-                btn.classList.remove("offline");
-                btn.classList.add("online");
-                btn.innerText = "MENCARI PESANAN...";
-                
-                // Simulasi memunculkan pesanan setelah 2 detik
-                setTimeout(() => {
-                    notif.style.display = "block";
-                }, 2000);
-
-            } else {
-                btn.classList.remove("online");
-                btn.classList.add("offline");
-                btn.innerText = "AKTIFKAN STATUS";
-                notif.style.display = "none";
-            }
-        }
-
-        function terimaOrder() {
-            alert("Pesanan diterima! Panduan arah menuju lokasi penjemputan telah diaktifkan.");
-            document.getElementById("notifOrder").style.display = "none";
-        }
-    </script>
 </body>
 </html>
