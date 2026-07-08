@@ -1,5 +1,5 @@
 // 1. URL DARI GOOGLE APPS SCRIPT (Ganti dengan link URL Web App Anda nanti)
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw.../exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7HWyhEbbwN6U8xG-rrpXFnPXnNjhBqKE62EveIn1I4ojVBNnyRkMCFmdo7bq_yOcKYg/exec";
 
 // 2. REGISTRASI SERVICE WORKER (PWA)
 if ('serviceWorker' in navigator) {
