@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nganterin - Aplikasi Kebanggaan Boyolali</title>
+    <title>Boyolali - Satu Aplikasi, Semua Kebutuhan</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
 
     <style>
+        /* TEMA WARNA BARU: Hijau Alam & Elegan */
         :root {
-            --primary: #0052FF;
-            --primary-dark: #003BB5;
-            --primary-light: #E6EFFF;
-            --bg-gray: #F4F6F9;
-            --text-dark: #1A1A1A;
-            --text-muted: #888888;
+            --primary: #1A7332; 
+            --primary-dark: #125524;
+            --primary-light: #E8F5E9; 
+            --accent-brown: #8D6E63;
+            --bg-gray: #F8F9FA;
+            --text-dark: #2D3748;
+            --text-muted: #718096;
             --white: #FFFFFF;
         }
 
@@ -35,7 +37,7 @@
             color: white; transition: opacity 0.6s ease, visibility 0.6s ease;
         }
         #splash-screen.hidden { opacity: 0; visibility: hidden; }
-        .splash-logo i { font-size: 65px; margin-bottom: 15px; color: #FFD700; animation: bounce 2s infinite; }
+        .splash-logo i { font-size: 65px; margin-bottom: 15px; color: #FFFFFF; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
         /* HALAMAN BERANDA UTAMA */
@@ -49,57 +51,53 @@
         .search-bar {
             background: var(--white); padding: 12px 20px; border-radius: 30px;
             display: flex; align-items: center; gap: 10px; margin-top: 15px; color: var(--text-muted);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
         .wallet-card {
             background: var(--white); margin: -20px 20px 20px 20px; padding: 15px 20px;
-            border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
+            border-radius: 12px; display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; z-index: 10;
         }
-        .wallet-info h4 { color: var(--text-dark); font-size: 16px; }
+        .wallet-info h4 { color: var(--text-dark); font-size: 16px; font-weight: 600; }
         .wallet-info p { color: var(--text-muted); font-size: 12px; }
+        .top-up-btn { font-size: 12px; color: var(--primary); font-weight: 600; cursor: pointer; }
 
-        /* 2. BANNER INSTALL PWA */
-        .install-banner {
-            background: linear-gradient(135deg, #0052FF, #003BB5); color: white; margin: 0 20px 20px 20px;
-            padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 82, 255, 0.3); display: none;
-        }
-        .install-info { display: flex; align-items: center; gap: 12px; }
-        .install-info i { font-size: 24px; color: #FFD700; }
-        .btn-install { background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 12px; cursor: pointer; }
-
-        /* MENU UTAMA */
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; text-align: center; }
-        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-dark); }
+        /* MENU UTAMA - Disesuaikan dengan Poster (Grid 4 Kolom Rapi) */
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 10px; padding: 10px 20px; text-align: center; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; cursor: pointer; color: var(--text-dark); text-decoration: none; }
         .menu-icon {
-            width: 55px; height: 55px; background: var(--primary-light); color: var(--primary);
-            border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 24px;
+            width: 50px; height: 50px; background: var(--primary-light); color: var(--primary);
+            border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 22px;
+            transition: transform 0.2s;
         }
+        .menu-item:active .menu-icon { transform: scale(0.95); }
 
-        .section-title { padding: 25px 20px 10px 20px; font-size: 16px; font-weight: 600; }
+        /* PROMO & UMKM SECTION */
+        .section-title { padding: 25px 20px 10px 20px; font-size: 16px; font-weight: 600; color: var(--text-dark); }
         .promo-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px 20px; scroll-snap-type: x mandatory; }
         .promo-scroll::-webkit-scrollbar { display: none; }
         .promo-card {
-            min-width: 260px; background: var(--white); border-radius: 15px; scroll-snap-align: start;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04); overflow: hidden;
+            min-width: 280px; background: var(--primary-light); border-radius: 12px; scroll-snap-align: start;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; align-items: center; padding: 15px; gap: 15px;
         }
-        .promo-img { width: 100%; height: 130px; object-fit: cover; }
-        .promo-content { padding: 12px; }
+        .promo-content h4 { color: var(--primary-dark); font-size: 14px; margin-bottom: 4px; }
+        .promo-content p { color: var(--text-dark); font-size: 11px; line-height: 1.4; }
+        .promo-img-wrapper { width: 60px; height: 60px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+        .promo-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
         /* BOTTOM NAV */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white);
-            display: flex; justify-content: space-around; padding: 15px 0;
+            display: flex; justify-content: space-around; padding: 12px 0;
             box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50;
         }
-        .nav-item { color: #C4C4C4; font-size: 22px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
+        .nav-item { color: #C4C4C4; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
+        .nav-item i { font-size: 20px; }
         .nav-item span { font-size: 10px; font-weight: 500; }
         .nav-item.active { color: var(--primary); }
 
-        /* ==========================================
-           BOTTOM SHEET LOGIN (KOREKSI POSISI FIXED)
-           ========================================== */
+        /* BOTTOM SHEET LOGIN */
         .overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.6); z-index: 99;
@@ -111,174 +109,151 @@
             position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;
             width: 100%; max-width: 480px;
             background: var(--white); z-index: 100;
-            padding: 30px 20px 40px 20px; /* Padding bawah ditambah agar tidak mepet layar */
-            border-radius: 25px 25px 0 0;
+            padding: 30px 20px 40px 20px;
+            border-radius: 20px 20px 0 0;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efek membal elegan */
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .login-sheet.active { transform: translateY(0); }
-        .login-sheet h2 { color: var(--primary); font-size: 24px; margin-bottom: 5px; }
-        .login-sheet p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+        .login-sheet h2 { color: var(--text-dark); font-size: 22px; margin-bottom: 5px; }
+        .login-sheet p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
 
         .input-group { margin-bottom: 15px; }
-        .input-group input { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 14px; outline: none; transition: 0.3s; background: #FAFAFA; }
+        .input-group input { width: 100%; padding: 14px; border: 1px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.3s; background: #FAFAFA; }
         .input-group input:focus { border-color: var(--primary); background: var(--white); }
-        .btn-primary { width: 100%; padding: 16px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 5px; box-shadow: 0 4px 15px rgba(0, 82, 255, 0.3); }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
 
-        <!-- SPLASH SCREEN ANIMASI (Layar Biru Awal) -->
+        <!-- SPLASH SCREEN ANIMASI -->
         <div id="splash-screen">
-            <div class="splash-logo"><i class="fas fa-motorcycle"></i></div>
-            <h2 style="font-weight: 700; font-size: 28px; letter-spacing: 1px;">Nganterin</h2>
-            <p style="font-size: 13px; opacity: 0.9; margin-top: 5px;">Aplikasi Kebanggaan Boyolali</p>
+            <div class="splash-logo"><i class="fas fa-leaf"></i></div>
+            <h2 style="font-weight: 700; font-size: 28px; letter-spacing: 1px;">Boyolali</h2>
+            <p style="font-size: 13px; opacity: 0.9; margin-top: 5px;">Satu Aplikasi, Semua Kebutuhan</p>
         </div>
         
-        <!-- HALAMAN BERANDA -->
         <div class="home-screen">
+            <!-- HEADER LOKASI -->
             <div class="main-header">
-                <!-- Sapaan Lokal -->
-                <p id="greetingSub" style="font-size: 12px; opacity: 0.9;">Eksplorasi Area</p>
-                <h3 id="greetingName" style="font-size: 16px; margin-top: 2px;">Boyolali & Sekitarnya <i class="fas fa-chevron-down"></i></h3>
+                <p id="greetingSub" style="font-size: 11px; opacity: 0.9; margin-bottom: 2px;"><i class="fas fa-map-marker-alt"></i> Lokasi Saat Ini</p>
+                <h3 id="greetingName" style="font-size: 15px; font-weight: 600;">Area Boyolali <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></h3>
                 
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <!-- Hyper-local Copywriting -->
-                    <span style="font-size: 14px;">Mau jajan apa hari ini lur?</span>
+                    <span style="font-size: 13px;">Cari makanan, layanan, atau tujuan...</span>
                 </div>
             </div>
 
+            <!-- KARTU SALDO -->
             <div class="wallet-card">
                 <div class="wallet-info">
-                    <p>Saldo NganterinPay</p>
-                    <h4>Rp 0</h4>
+                    <p>Saldo BoyolaliPay</p>
+                    <h4>Rp 150.000</h4>
                 </div>
+                <div class="top-up-btn">Top Up ></div>
             </div>
 
-            <!-- BANNER INSTALL PWA CERDAS -->
-            <div class="install-banner" id="installBanner">
-                <div class="install-info">
-                    <i class="fas fa-cloud-download-alt"></i>
-                    <div>
-                        <h4 style="font-size: 14px;">Install Nganterin App</h4>
-                        <p style="font-size: 11px; opacity: 0.8;">Lebih cepat, hemat kuota!</p>
-                    </div>
-                </div>
-                <button onclick="installPWA()" class="btn-install">Install</button>
-            </div>
-
+            <!-- MENU UTAMA 8 IKON PRESISI -->
             <div class="menu-grid">
-                <a href="ride.html" class="menu-item" style="text-decoration:none;">
-                    <div class="menu-icon"><i class="fas fa-motorcycle"></i></div>Ride
+                <a href="ride.html" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-motorcycle"></i></div>Transportasi
                 </a>
-                <a href="food.html" class="menu-item" style="text-decoration:none;">
-                    <div class="menu-icon"><i class="fas fa-utensils"></i></div>Food
+                <a href="food.html" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-utensils"></i></div>Makanan
                 </a>
-                <a href="send.html" class="menu-item" style="text-decoration:none;">
-                    <div class="menu-icon"><i class="fas fa-box"></i></div>Send
+                <a href="mart.html" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-shopping-basket"></i></div>Belanja
                 </a>
-                <a href="mart.html" class="menu-item" style="text-decoration:none;">
-                    <div class="menu-icon"><i class="fas fa-shopping-basket"></i></div>Mart
+                <a href="send.html" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-box"></i></div>Kirim
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-bolt"></i></div>Pulsa & PLN
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-ticket-alt"></i></div>Tiket & Hotel
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-hand-holding-heart"></i></div>Donasi
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-th-large"></i></div>Lainnya
                 </a>
             </div>
 
-            <div class="section-title">Promo Khusus Hari Ini 🔥</div>
+            <!-- KAMPANYE UMKM LOKAL -->
+            <div class="section-title">Dukung UMKM Kuliner Daerah</div>
             <div class="promo-scroll">
-                <div class="promo-card" onclick="cekAkses('Promo')">
-                    <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=500&q=60" class="promo-img" alt="Promo">
-                    <div class="promo-content"><h4>Diskon Ongkir 50% Area Boyolali</h4></div>
+                <div class="promo-card">
+                    <div class="promo-content">
+                        <h4>Bantu Usaha Lokal</h4>
+                        <p>Strategi adaptasi terbaik adalah mendukung produk sekitar kita. Bebas ongkir hari ini!</p>
+                    </div>
+                    <div class="promo-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=200&q=80" alt="Kuliner Lokal">
+                    </div>
                 </div>
             </div>
             
-            <!-- MENU RAHASIA DEVELOPER (HAPUS SAAT RILIS) -->
-            <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; padding: 20px; border-top: 1px dashed #ccc;">
-                <p style="font-size: 12px; color: #888; margin-bottom: 10px;"><i class="fas fa-tools"></i> Navigasi Testing (Developer):</p>
+            <!-- NAVIGASI TESTING DEVELOPER (Bisa dihapus saat rilis) -->
+            <div style="text-align: center; margin-top: 30px; margin-bottom: 20px; padding: 20px;">
                 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                    <a href="admin.html" style="font-size: 12px; background: #333; color: white; padding: 5px 15px; border-radius: 15px; text-decoration: none;"><i class="fas fa-laptop"></i> Admin</a>
-                    <a href="driver.html" style="font-size: 12px; background: #00C853; color: white; padding: 5px 15px; border-radius: 15px; text-decoration: none;"><i class="fas fa-motorcycle"></i> App Driver</a>
-                    <a href="daftar-driver.html" style="font-size: 12px; background: #FF3D00; color: white; padding: 5px 15px; border-radius: 15px; text-decoration: none;"><i class="fas fa-file-signature"></i> Form Mitra</a>
+                    <a href="admin.html" style="font-size: 11px; background: #333; color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none;"><i class="fas fa-laptop"></i> Admin</a>
+                    <a href="driver.html" style="font-size: 11px; background: var(--primary); color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none;"><i class="fas fa-motorcycle"></i> App Driver</a>
                 </div>
             </div>
 
         </div>
 
+        <!-- NAVIGASI BAWAH -->
         <nav class="bottom-nav">
-            <a href="#" class="nav-item active"><i class="fas fa-home"></i><span>Beranda</span></a>
-            <a href="#" class="nav-item" onclick="cekAkses('Pesanan')"><i class="fas fa-clipboard-list"></i><span>Pesanan</span></a>
-            <a href="profil.html" class="nav-item"><i class="fas fa-user"></i><span>Profil</span></a>
+            <a href="index.html" class="nav-item active"><i class="fas fa-home"></i><span>Beranda</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
+            <a href="profil.html" class="nav-item"><i class="fas fa-user"></i><span>Akun</span></a>
         </nav>
 
-        <!-- OVERLAY & BOTTOM SHEET LOGIN -->
+        <!-- BOTTOM SHEET DAFTAR/MASUK -->
         <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
-        
         <div class="login-sheet" id="loginSheet">
-            <!-- Garis kecil di atas pop-up sebagai petunjuk visual (UX Idea) -->
-            <div style="width: 40px; height: 5px; background: #ddd; border-radius: 10px; margin: 0 auto 20px auto;"></div>
-            <h2>Daftar / Masuk</h2>
-            <p>Yuk daftar dulu biar gampang pesannya!</p>
+            <div style="width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto;"></div>
+            <h2>Selamat datang!</h2>
+            <p>Masukkan data diri untuk mulai menggunakan layanan.</p>
             
             <div class="input-group">
-                <input type="text" id="regName" placeholder="Nama Panggilan (Misal: Budi)">
+                <input type="text" id="regName" placeholder="Nama Lengkap">
             </div>
             <div class="input-group">
                 <input type="tel" id="regPhone" placeholder="Nomor WhatsApp">
             </div>
             
-            <button class="btn-primary" onclick="prosesDaftar()">Lanjut & Masuk</button>
+            <button class="btn-primary" onclick="prosesDaftar()">Mulai Sekarang</button>
         </div>
 
     </div>
 
-    <!-- LOGIKA JAVASCRIPT -->
     <script>
-        // FUNGSI 1: MENGHILANGKAN SPLASH SCREEN SETELAH 1.5 DETIK
+        // Menghilangkan splash screen
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('hidden');
-            }, 1500);
+            setTimeout(() => { document.getElementById('splash-screen').classList.add('hidden'); }, 1500);
         });
 
-        // FUNGSI 2: BANNER INSTALL PWA
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBanner').style.display = 'flex';
-        });
-
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        document.getElementById('installBanner').style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        }
-
-        // FUNGSI 3: LOGIKA USER MEMORI DAN LOGIN
+        // Cek data login di Local Storage
         window.onload = function() {
             let namaUser = localStorage.getItem("userName");
             if (namaUser) {
-                document.getElementById("greetingSub").innerText = "Halo, sugeng rawuh";
-                document.getElementById("greetingName").innerHTML = namaUser + " 👋";
+                document.getElementById("greetingName").innerHTML = namaUser + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
+            } else {
+                // Tampilkan popup jika belum login
+                setTimeout(() => {
+                    document.getElementById("overlay").classList.add("active");
+                    document.getElementById("loginSheet").classList.add("active");
+                }, 2000);
             }
         };
-
-        function cekAkses(namaMenu) {
-            let sudahDaftar = localStorage.getItem("userName");
-            if (sudahDaftar) {
-                alert("Membuka halaman " + namaMenu + " untuk " + sudahDaftar);
-            } else {
-                document.getElementById("overlay").classList.add("active");
-                document.getElementById("loginSheet").classList.add("active");
-            }
-        }
 
         function tutupLogin() {
             document.getElementById("overlay").classList.remove("active");
@@ -288,30 +263,22 @@
         function prosesDaftar() {
             let nama = document.getElementById("regName").value;
             let hp = document.getElementById("regPhone").value;
-
-            if (nama === "" || hp === "") {
-                alert("Isi nama dan nomor WA dulu ya!");
-                return;
-            }
-
+            if (nama === "" || hp === "") { alert("Mohon lengkapi nama dan nomor WhatsApp."); return; }
             localStorage.setItem("userName", nama);
             localStorage.setItem("userPhone", hp);
             tutupLogin();
-
-            document.getElementById("greetingSub").innerText = "Halo, sugeng rawuh";
-            document.getElementById("greetingName").innerHTML = nama + " 👋";
-            alert("Sip! Berhasil mendaftar. Yuk pesen sekarang, Mas Kurir siap meluncur!");
+            document.getElementById("greetingName").innerHTML = nama + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
         }
     </script>
     
-    <!-- REGISTRASI SERVICE WORKER -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
-            .then(() => console.log("Service Worker Terdaftar!"))
             .catch(err => console.log("Gagal mendaftar Service Worker", err));
         }
     </script>
+    
+    <!-- PENTING: Memanggil app.js tanpa mengubah isi aslinya -->
     <script src="app.js"></script>
     
 </body>
