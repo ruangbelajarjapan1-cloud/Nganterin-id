@@ -58,3 +58,32 @@ async function kirimPesanan(layanan, detailJemput, detailTujuan, harga) {
         btn.disabled = false;
     }
 }
+// ==============================================================
+// TAMBAHAN KODE: MENGIRIM DATA USER BARU KE GOOGLE SHEETS
+// Diletakkan di baris paling bawah app.js tanpa mengubah kode di atasnya
+// ==============================================================
+
+async function kirimDataUserBaru(namaUser, waUser) {
+    // Pastikan SCRIPT_URL menggunakan link dari Google Apps Script Anda yang terbaru
+    const URL_SERVER = SCRIPT_URL; 
+    
+    // Siapkan data dengan parameter 'action' = 'daftar_user'
+    let dataKirim = new URLSearchParams({
+        "action": "daftar_user",
+        "nama": namaUser,
+        "wa": waUser
+    });
+
+    try {
+        // Tembakkan data ke server Google Sheets secara diam-diam (background process)
+        let response = await fetch(URL_SERVER, {
+            method: 'POST',
+            body: dataKirim
+        });
+        
+        let hasil = await response.text();
+        console.log("Respon Server (Pendaftaran):", hasil);
+    } catch (error) {
+        console.error("Gagal sinkronisasi data pengguna ke server:", error);
+    }
+}
