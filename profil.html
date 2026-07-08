@@ -3,34 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya - Nganterin</title>
+    <title>Akun Saya - Boyolali App</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #0052FF; --bg-gray: #F4F6F9; --white: #FFFFFF; --text-dark: #1A1A1A; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        :root { 
+            --primary: #1A7332; 
+            --primary-light: #E8F5E9; 
+            --bg-gray: #F8F9FA; 
+            --white: #FFFFFF; 
+            --text-dark: #2D3748; 
+            --text-muted: #718096;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
         body { background-color: #E5E5E5; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 480px; background-color: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 80px;}
         
         .top-bar { display: flex; align-items: center; padding: 20px; background: var(--white); }
-        .btn-back { font-size: 20px; color: var(--text-dark); text-decoration: none; margin-right: 15px; }
         
-        /* Kartu Profil */
-        .profile-card { background: var(--white); padding: 30px 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .avatar { width: 80px; height: 80px; background: #E6EFFF; color: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; margin: 0 auto 15px auto; }
-        .profile-card h2 { font-size: 22px; color: var(--text-dark); margin-bottom: 5px;}
-        .profile-card p { font-size: 14px; color: #666; }
+        /* Kartu Profil Utama */
+        .profile-card { background: var(--white); padding: 30px 20px; text-align: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .avatar { width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; margin: 0 auto 15px auto; }
+        .profile-card h2 { font-size: 20px; color: var(--text-dark); margin-bottom: 5px; font-weight: 600;}
+        .profile-card p { font-size: 13px; color: var(--text-muted); }
 
-        /* Menu Bawah Profil */
+        /* Menu Pilihan */
         .menu-list { padding: 20px; margin-top: 10px; }
-        .menu-item { background: var(--white); padding: 15px 20px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; color: var(--text-dark); text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .menu-item i { color: var(--primary); font-size: 18px; width: 20px; text-align: center; }
+        .menu-item { background: var(--white); padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; color: var(--text-dark); text-decoration: none; font-size: 14px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .menu-item i { color: var(--primary); font-size: 18px; width: 24px; text-align: center; }
         
-        .btn-logout { width: 100%; background: #FF3D00; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; }
+        .btn-logout { width: 100%; background: #E53E3E; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 20px; }
 
-        /* Bottom Nav Sticky */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: var(--white); display: flex; justify-content: space-around; padding: 15px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50; }
-        .nav-item { color: #C4C4C4; font-size: 22px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
+        /* Navigasi Bawah Selaras dengan Halaman Beranda */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white);
+            display: flex; justify-content: space-around; padding: 12px 0;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50;
+        }
+        .nav-item { color: #C4C4C4; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
+        .nav-item i { font-size: 20px; }
         .nav-item span { font-size: 10px; font-weight: 500; }
         .nav-item.active { color: var(--primary); }
     </style>
@@ -38,32 +49,33 @@
 <body>
     <div class="app-container">
         <div class="top-bar">
-            <h2 style="font-size: 18px; margin: 0 auto;">Profil Saya</h2>
+            <h2 style="font-size: 18px; margin: 0 auto; font-weight: 600; color: var(--text-dark);">Akun Saya</h2>
         </div>
 
         <div class="profile-card">
             <div class="avatar"><i class="fas fa-user"></i></div>
-            <h2 id="tampilNama">Belum Login</h2>
-            <p id="tampilWA">Silakan pesan layanan untuk mendaftar</p>
+            <h2 id="tampilNama">Belum Terdaftar</h2>
+            <p id="tampilWA">Selesaikan pengisian data di beranda</p>
         </div>
 
         <div class="menu-list">
-            <a href="#" class="menu-item"><i class="fas fa-history"></i> Riwayat Pesanan Saya</a>
             <a href="#" class="menu-item"><i class="fas fa-map-marker-alt"></i> Alamat Tersimpan</a>
+            <a href="#" class="menu-item"><i class="fas fa-star"></i> Penilaian Anda</a>
             <a href="#" class="menu-item"><i class="fas fa-headset"></i> Bantuan & Laporan</a>
             
             <button class="btn-logout" onclick="keluarAkun()">Keluar Akun</button>
         </div>
 
+        <!-- Navigasi 4 Menu Sesuai Poster -->
         <nav class="bottom-nav">
             <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Beranda</span></a>
-            <a href="#" class="nav-item"><i class="fas fa-clipboard-list"></i><span>Pesanan</span></a>
-            <a href="profil.html" class="nav-item active"><i class="fas fa-user"></i><span>Profil</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
+            <a href="profil.html" class="nav-item active"><i class="fas fa-user"></i><span>Akun</span></a>
         </nav>
     </div>
 
     <script>
-        // Saat halaman dibuka, ambil data dari memori HP
         window.onload = function() {
             let nama = localStorage.getItem("userName");
             let wa = localStorage.getItem("userPhone");
@@ -74,14 +86,13 @@
             }
         };
 
-        // Fungsi Logout (Menghapus memori)
         function keluarAkun() {
-            let konfirmasi = confirm("Yakin ingin keluar dari akun Anda?");
+            let konfirmasi = confirm("Apakah Anda yakin ingin keluar dari akun?");
             if (konfirmasi) {
                 localStorage.removeItem("userName");
                 localStorage.removeItem("userPhone");
                 alert("Berhasil keluar.");
-                window.location.href = "index.html"; // Lempar kembali ke beranda
+                window.location.href = "index.html"; 
             }
         }
     </script>
