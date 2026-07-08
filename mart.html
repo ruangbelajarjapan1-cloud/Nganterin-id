@@ -95,6 +95,30 @@
             if(nama && hp) { localStorage.setItem("userName", nama); localStorage.setItem("userPhone", hp); tutupLogin(); alert("Berhasil! Meneruskan pesanan Anda..."); }
             else { alert("Mohon lengkapi data Anda terlebih dahulu."); }
         }
+        function prosesDaftar() {
+    let nama = document.getElementById("regName").value;
+    let hp = document.getElementById("regPhone").value;
+    
+    if (nama === "" || hp === "") { 
+        alert("Mohon lengkapi nama dan nomor WhatsApp."); 
+        return; 
+    }
+    
+    // 1. Simpan di memori HP
+    localStorage.setItem("userName", nama);
+    localStorage.setItem("userPhone", hp);
+    
+    // 2. KIRIM DATA KE GOOGLE SHEETS (Memanggil fungsi baru di app.js)
+    kirimDataUserBaru(nama, hp);
+    
+    tutupLogin();
+    
+    // Perbarui teks nama di beranda
+    let elemenNama = document.getElementById("greetingName");
+    if(elemenNama) {
+        elemenNama.innerHTML = nama + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
+    }
+}
     </script>
 
     <script src="app.js"></script>
