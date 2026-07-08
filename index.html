@@ -280,6 +280,52 @@
     
     <!-- PENTING: Memanggil app.js tanpa mengubah isi aslinya -->
     <script src="app.js"></script>
-    
+    <div class="overlay" id="installOverlay"></div>
+<div class="login-sheet" id="installModal" style="z-index: 1000;">
+    <div style="width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto;"></div>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <i class="fas fa-download" style="font-size: 40px; color: var(--primary); margin-bottom: 10px;"></i>
+        <h2 style="color: var(--text-dark); font-size: 20px;">Pasang Aplikasi Boyolali</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 5px;">Akses lebih cepat, hemat kuota, dan nikmati fitur penuh tanpa buka browser!</p>
+    </div>
+    <button class="btn-primary" id="btnInstallPWA" style="margin-bottom: 10px;">Instal Sekarang</button>
+    <button onclick="tutupInstallModal()" style="width: 100%; padding: 15px; background: transparent; color: var(--text-muted); border: none; font-size: 14px; font-weight: 600; cursor: pointer;">Nanti Saja</button>
+</div>
+
+<script>
+    // LOGIKA PEMICU INSTALL PWA
+    let deferredPromptUtama;
+    const installOverlay = document.getElementById('installOverlay');
+    const installModal = document.getElementById('installModal');
+    const btnInstallPWA = document.getElementById('btnInstallPWA');
+
+    // Menangkap sinyal dari browser bahwa aplikasi siap diinstal
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPromptUtama = e;
+        
+        // Munculkan Pop-up Instalasi 2 detik setelah Splash Screen hilang
+        setTimeout(() => {
+            installOverlay.classList.add('active');
+            installModal.classList.add('active');
+        }, 3500); 
+    });
+
+    btnInstallPWA.addEventListener('click', async () => {
+        if (deferredPromptUtama) {
+            deferredPromptUtama.prompt();
+            const { outcome } = await deferredPromptUtama.userChoice;
+            if (outcome === 'accepted') {
+                tutupInstallModal();
+            }
+            deferredPromptUtama = null;
+        }
+    });
+
+    function tutupInstallModal() {
+        installOverlay.classList.remove('active');
+        installModal.classList.remove('active');
+    }
+</script>
 </body>
 </html>
