@@ -3,67 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nganterin - Aplikasi Mitra Driver</title>
+    <title>Boyolali App - Mitra Pengemudi</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: #121212; color: white; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background-color: #1E1E1E; min-height: 100vh; padding: 20px; position: relative; }
+        .app-container { width: 100%; max-width: 480px; background-color: #1A1A1A; min-height: 100vh; padding: 25px 20px; position: relative; }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h2 { color: #0052FF; font-size: 20px; }
-        .profile-img { width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #888; }
+        .header h2 { color: #E8F5E9; font-size: 18px; font-weight: 600; }
+        .header h2 span { color: #1A7332; }
+        .profile-img { width: 42px; height: 42px; background: #2D3748; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #A0AEC0; }
 
         /* Tombol Online/Offline */
-        .status-toggle { background: #2C2C2C; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-        .btn-status { width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
-        .btn-status.offline { background: #444; color: #aaa; }
-        .btn-status.online { background: #00C853; color: white; box-shadow: 0 0 15px rgba(0, 200, 83, 0.4); }
+        .status-toggle { background: #2D3748; padding: 25px 20px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
+        .btn-status { width: 100%; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; letter-spacing: 0.5px; }
+        .btn-status.offline { background: #4A5568; color: #CBD5E0; }
+        .btn-status.online { background: #1A7332; color: white; box-shadow: 0 4px 15px rgba(26, 115, 50, 0.4); }
 
         /* Kartu Pendapatan */
-        .income-card { background: linear-gradient(135deg, #0052FF, #003BB5); padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-        .income-card p { font-size: 14px; opacity: 0.8; margin-bottom: 5px; }
-        .income-card h1 { font-size: 32px; margin-bottom: 10px; }
+        .income-card { background: linear-gradient(135deg, #1A7332, #125524); padding: 25px 20px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
+        .income-card p { font-size: 13px; opacity: 0.9; margin-bottom: 8px; }
+        .income-card h1 { font-size: 32px; margin-bottom: 12px; font-weight: 700; }
+        
+        .income-stats { display: flex; justify-content: center; gap: 20px; font-size: 12px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 10px; display: inline-flex; margin: 0 auto; }
 
-        /* Pop-up Order Masuk (Simulasi) */
-        .order-popup { background: white; color: black; padding: 20px; border-radius: 15px; margin-top: 20px; border-left: 8px solid #FF3D00; display: none; /* Disembunyikan dulu */ }
-        .order-popup h3 { color: #FF3D00; margin-bottom: 10px; font-size: 18px; }
-        .order-detail { font-size: 14px; margin-bottom: 15px; color: #333; }
-        .btn-terima { width: 100%; padding: 15px; background: #FF3D00; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;}
+        /* Pop-up Order Masuk */
+        .order-popup { background: white; color: #1A1A1A; padding: 20px; border-radius: 16px; margin-top: 20px; border-left: 8px solid #DD6B20; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .order-popup h3 { color: #DD6B20; margin-bottom: 15px; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;}
+        .order-detail { font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+        .order-detail p i { width: 20px; color: #718096; text-align: center; margin-right: 5px; }
+        .ongkir-highlight { font-size: 16px; font-weight: 700; color: #1A7332; margin-top: 10px; display: inline-block; background: #E8F5E9; padding: 5px 10px; border-radius: 8px; }
+        .btn-terima { width: 100%; padding: 15px; background: #DD6B20; color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.3s; }
+        .btn-terima:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="header">
-            <h2>Nganterin Driver</h2>
+            <h2>Boyolali <span>Driver</span></h2>
             <div class="profile-img"><i class="fas fa-user"></i></div>
         </div>
 
         <div class="status-toggle">
-            <p style="margin-bottom: 10px; font-size: 14px; color: #aaa;">Ketuk untuk mulai mencari order</p>
-            <button class="btn-status offline" id="statusBtn" onclick="toggleStatus()">MENYALA ABANGKU</button>
+            <p style="margin-bottom: 15px; font-size: 13px; color: #A0AEC0;">Ketuk tombol di bawah untuk mulai menerima pesanan</p>
+            <button class="btn-status offline" id="statusBtn" onclick="toggleStatus()">AKTIFKAN STATUS</button>
         </div>
 
         <div class="income-card">
             <p>Pendapatan Hari Ini</p>
             <h1>Rp 145.000</h1>
-            <p style="font-size: 12px;"><i class="fas fa-check-circle"></i> 8 Order Selesai</p>
+            <div class="income-stats">
+                <span><i class="fas fa-check-circle"></i> 8 Selesai</span>
+                <span><i class="fas fa-star" style="color: #F6E05E;"></i> 4.9 Rating</span>
+            </div>
         </div>
 
         <div class="order-popup" id="notifOrder">
-            <h3>🚨 ORDER MASUK!</h3>
+            <h3><i class="fas fa-bell"></i> Pesanan Baru Masuk!</h3>
             <div class="order-detail">
-                <p><strong><i class="fas fa-store"></i> Jemput:</strong> Mie Gacoan Boyolali</p>
-                <p><strong><i class="fas fa-map-marker-alt"></i> Antar:</strong> Jl. Merdeka No. 10</p>
-                <p style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #00C853;">Ongkir: Rp 12.000</p>
+                <p><i class="fas fa-store"></i> <strong>Jemput:</strong> Sate Sapi Pak Manto</p>
+                <p><i class="fas fa-map-marker-alt"></i> <strong>Antar:</strong> Jl. Merdeka No. 10 (Kantor Bupati)</p>
+                <div class="ongkir-highlight">Tarif: Rp 12.000</div>
             </div>
             <button class="btn-terima" onclick="terimaOrder()">TERIMA PESANAN</button>
         </div>
     </div>
 
+    <script src="driver.js"></script>
+    
     <script>
+        // Logika tampilan untuk melengkapi driver.js
         function toggleStatus() {
             let btn = document.getElementById("statusBtn");
             let notif = document.getElementById("notifOrder");
@@ -71,9 +83,9 @@
             if (btn.classList.contains("offline")) {
                 btn.classList.remove("offline");
                 btn.classList.add("online");
-                btn.innerText = "ONLINE (MENCARI ORDER)";
+                btn.innerText = "MENCARI PESANAN...";
                 
-                // Simulasi memunculkan order setelah 2 detik online
+                // Simulasi memunculkan pesanan setelah 2 detik
                 setTimeout(() => {
                     notif.style.display = "block";
                 }, 2000);
@@ -81,13 +93,13 @@
             } else {
                 btn.classList.remove("online");
                 btn.classList.add("offline");
-                btn.innerText = "MENYALA ABANGKU";
+                btn.innerText = "AKTIFKAN STATUS";
                 notif.style.display = "none";
             }
         }
 
         function terimaOrder() {
-            alert("Pesanan diterima! Segera menuju lokasi penjemputan.");
+            alert("Pesanan diterima! Panduan arah menuju lokasi penjemputan telah diaktifkan.");
             document.getElementById("notifOrder").style.display = "none";
         }
     </script>
