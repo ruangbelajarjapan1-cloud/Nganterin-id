@@ -214,29 +214,24 @@
         <!-- OVERLAY UMUM -->
         <div class="overlay" id="overlay" onclick="tutupSemuaModal()"></div>
 
-      <div class="bottom-sheet" id="loginSheet">
-            <div class="sheet-handle"></div>
-            <h2 style="color: var(--text-dark); font-size: 22px; margin-bottom: 5px;">Selamat datang!</h2>
-            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Masukkan data diri untuk mulai menggunakan layanan.</p>
-            
-            <div class="input-group">
-                <input type="text" id="regName" placeholder="Nama Lengkap">
-            </div>
-            
-            <div class="input-group">
-                <input type="tel" id="regPhone" placeholder="Nomor WhatsApp">
-            </div>
-            
-            <div class="input-group">
-                <input type="email" id="regEmail" placeholder="Alamat Email Aktif">
-            </div>
-            
-            <div class="input-group">
-                <textarea id="regAlamat" placeholder="Alamat Lengkap (Jalan, RT/RW)" style="width: 100%; padding: 14px; border: 1px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; background: #FAFAFA; font-family: 'Poppins', sans-serif; resize: none;" rows="2"></textarea>
-            </div>
-            <button class="btn-primary" onclick="prosesDaftar()">Mulai Sekarang</button>
-        </div>
-
+    <div class="bottom-sheet" id="loginSheet" style="max-height: 85vh; overflow-y: auto;">
+    <div class="sheet-handle"></div>
+    <div style="text-align: center; padding: 10px;">
+        <i class="fas fa-motorcycle" style="font-size: 50px; color: var(--primary);"></i>
+        <h2 style="margin: 15px 0;">Selamat Datang di Boyolali</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+            Satu aplikasi untuk segala kebutuhan kuliner, transportasi, dan layanan lokal Anda.
+        </p>
+    </div>
+    
+    <div class="input-group"><input type="text" id="regName" placeholder="Nama Lengkap Anda"></div>
+    <div class="input-group"><input type="tel" id="regPhone" placeholder="Nomor WhatsApp"></div>
+    
+    <button class="btn-primary" onclick="prosesDaftar()">Lanjutkan Verifikasi</button>
+    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 15px;">
+        Dengan menekan tombol di atas, Anda menyetujui Ketentuan Layanan kami.
+    </p>
+</div>
         <!-- BOTTOM SHEET: INSTALL PWA -->
         <div class="bottom-sheet" id="installModal" style="z-index: 1000;">
             <div class="sheet-handle"></div>
