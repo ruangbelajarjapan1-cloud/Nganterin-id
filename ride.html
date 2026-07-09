@@ -26,7 +26,7 @@
         /* Area Peta */
         #map { flex: 1; width: 100%; z-index: 1; }
         
-        /* Penanda Peta di Tengah UX ala Gojek/Grab */
+        /* Penanda Peta di Tengah UX */
         .center-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; font-size: 45px; color: var(--primary); pointer-events: none; transition: 0.2s ease-out; margin-top: -60px; text-shadow: 0 5px 10px rgba(0,0,0,0.3);}
         .center-marker.is-dropoff { color: #E53E3E; }
         
@@ -46,9 +46,25 @@
 
         .btn-action { width: 100%; padding: 16px; background: var(--primary); color: var(--white); border: none; border-radius: 15px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(15, 76, 129, 0.3); transition: 0.3s;}
         .btn-action.dropoff-mode { background: var(--accent); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); color: var(--white); }
+        .btn-action:disabled { background: #A0AEC0; cursor: not-allowed; box-shadow: none; }
 
-        /* Loader */
         #loader { display: none; font-size: 13px; color: var(--primary); text-align: center; margin-bottom: 15px; font-weight: 500; }
+
+        /* GAYA UNTUK MODAL PEMBAYARAN */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .overlay.active { opacity: 1; visibility: visible; }
+        .payment-sheet { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); z-index: 1002; padding: 30px 20px 40px 20px; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.4s ease; box-shadow: 0 -5px 20px rgba(0,0,0,0.15); }
+        .payment-sheet.active { transform: translateY(0); }
+        
+        .payment-option { display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid #EAEAEA; border-radius: 12px; margin-bottom: 15px; cursor: pointer; transition: 0.2s;}
+        .payment-option.active { border-color: var(--primary); background: var(--primary-light); }
+        .pay-icon { width: 40px; height: 40px; background: var(--white); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        .pay-detail { flex: 1; }
+        .pay-detail h4 { font-size: 14px; color: var(--text-dark); margin-bottom: 2px;}
+        .pay-detail p { font-size: 11px; color: var(--text-muted);}
+        .pay-radio { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; }
+        .payment-option.active .pay-radio { border-color: var(--primary); background: var(--primary); position: relative;}
+        .payment-option.active .pay-radio::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background: white; border-radius: 50%;}
     </style>
 </head>
 <body>
@@ -85,22 +101,55 @@
 
             <button class="btn-action" id="btnMain" onclick="prosesLangkah()">Set Lokasi Jemput</button>
         </div>
+
+        <div class="overlay" id="paymentOverlay" onclick="tutupPayment()"></div>
+        <div class="payment-sheet" id="paymentSheet">
+            <div class="sheet-handle"></div>
+            <h2 style="color: var(--text-dark); font-size: 20px; margin-bottom: 20px;">Pilih Pembayaran</h2>
+            
+            <div class="payment-option" onclick="pilihMetode('Tunai', this)">
+                <div class="pay-icon"><i class="fas fa-money-bill-wave" style="color: #059669;"></i></div>
+                <div class="pay-detail">
+                    <h4>Uang Tunai (Cash)</h4>
+                    <p>Bayar langsung ke pengemudi</p>
+                </div>
+                <div class="pay-radio"></div>
+            </div>
+
+            <div class="payment-option" onclick="pilihMetode('QRIS', this)">
+                <div class="pay-icon"><i class="fas fa-qrcode" style="color: var(--primary);"></i></div>
+                <div class="pay-detail">
+                    <h4>QRIS (Semua E-Wallet)</h4>
+                    <p>GoPay, OVO, Dana, M-Banking, dll.</p>
+                </div>
+                <div class="pay-radio"></div>
+            </div>
+
+            <div id="qrisArea" style="display: none; text-align: center; margin-top: 20px; padding: 20px; background: var(--bg-gray); border-radius: 12px; border: 1px dashed #ccc;">
+                <p style="font-size: 13px; color: var(--text-dark); font-weight: 600; margin-bottom: 10px;">Scan QRIS Perusahaan:</p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS" style="width: 150px; height: 150px; border-radius: 8px; margin-bottom: 10px;">
+                <p style="font-size: 11px; color: var(--text-muted);">Total: <strong style="color: var(--primary);" id="tagihanQRIS">Rp 0</strong></p>
+            </div>
+
+            <button class="btn-action" style="margin-top: 20px;" onclick="konfirmasiPesananFinal()">Konfirmasi & Pesan</button>
+        </div>
+
     </div>
 
     <script>
-        // 1. INISIALISASI PETA (Default: Pusat Boyolali)
+        // 1. INISIALISASI PETA
         let map = L.map('map', {zoomControl: false}).setView([-7.5333, 110.6000], 16);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap',
-            maxZoom: 19
+            attribution: '© OpenStreetMap', maxZoom: 19
         }).addTo(map);
 
-        // 2. VARIABEL STATE LOKASI
-        let modePeta = "JEMPUT"; // State: JEMPUT -> TUJUAN -> PESAN
+        // 2. VARIABEL STATE
+        let modePeta = "JEMPUT"; 
         let titikJemput = null;
         let titikTujuan = null;
         let namaJemput = "Lokasi Pilihan";
         let namaTujuan = "Tujuan Pilihan";
+        let hargaFinalSistem = "Rp 0";
 
         const elemenTeksLokasi = document.getElementById("teksLokasi");
         const elemenLabelTitik = document.getElementById("labelTitik");
@@ -110,9 +159,9 @@
         const fareBox = document.getElementById("fareBox");
         let polyline; 
 
-        // 3. DETEKSI PERGERAKAN PETA (Reverse Geocoding OpenStreetMap)
+        // 3. DETEKSI PETA BACA ALAMAT
         map.on('moveend', async function() {
-            if (modePeta === "PESAN") return; // Jangan baca peta lagi jika sudah muncul harga
+            if (modePeta === "PESAN") return; 
 
             let center = map.getCenter();
             elemenTeksLokasi.innerText = "Membaca alamat...";
@@ -124,31 +173,23 @@
                 let namaJalan = data.address.road || data.address.neighbourhood || data.address.suburb || data.address.village || "Lokasi pada peta";
                 elemenTeksLokasi.innerText = namaJalan;
                 
-                if (modePeta === "JEMPUT") {
-                    titikJemput = center;
-                    namaJemput = namaJalan;
-                } else if (modePeta === "TUJUAN") {
-                    titikTujuan = center;
-                    namaTujuan = namaJalan;
-                }
+                if (modePeta === "JEMPUT") { titikJemput = center; namaJemput = namaJalan; } 
+                else if (modePeta === "TUJUAN") { titikTujuan = center; namaTujuan = namaJalan; }
             } catch(e) {
                 elemenTeksLokasi.innerText = "Lokasi Terpilih";
             }
         });
 
-        // 4. MINTA LOKASI SAAT INI (GPS)
+        // 4. LOKASI GPS SAAT INI
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 map.setView([position.coords.latitude, position.coords.longitude], 17);
-            }, () => {
-                elemenTeksLokasi.innerText = "Geser peta secara manual";
-            });
+            }, () => { elemenTeksLokasi.innerText = "Geser peta secara manual"; });
         }
 
-        // 5. LOGIKA TOMBOL AKSI UTAMA
+        // 5. LOGIKA TOMBOL PETA UTAMA
         function prosesLangkah() {
             if (modePeta === "JEMPUT") {
-                // UBAH KE MODE TUJUAN
                 if (!titikJemput) titikJemput = map.getCenter();
                 
                 modePeta = "TUJUAN";
@@ -160,12 +201,9 @@
                 
                 btnMain.innerText = "Set Tujuan Pengantaran";
                 btnMain.classList.add("dropoff-mode");
-                
-                // Geser peta sedikit agar animasi terasa
                 map.panBy([0, -80]); 
 
             } else if (modePeta === "TUJUAN") {
-                // UBAH KE MODE PESAN (KALKULASI RUTE OSRM)
                 if (!titikTujuan) titikTujuan = map.getCenter();
                 
                 modePeta = "PESAN";
@@ -173,7 +211,7 @@
                 document.getElementById("loader").style.display = "block";
                 btnMain.disabled = true;
                 
-                // MENGAMBIL RUTE JALAN RAYA (OSRM API GRATIS)
+                // MENGHITUNG RUTE OSRM
                 let urlRute = `https://router.project-osrm.org/route/v1/driving/${titikJemput.lng},${titikJemput.lat};${titikTujuan.lng},${titikTujuan.lat}?overview=full&geometries=geojson`;
 
                 fetch(urlRute)
@@ -184,62 +222,91 @@
                     
                     if(data.routes && data.routes.length > 0) {
                         let rute = data.routes[0];
-                        let jarakMeter = rute.distance; 
-                        let jarakKm = (jarakMeter / 1000).toFixed(1);
+                        let jarakKm = (rute.distance / 1000).toFixed(1);
                         
-                        // Gambar garis rute
                         let ruteKoordinat = rute.geometry.coordinates.map(coord => [coord[1], coord[0]]);
                         polyline = L.polyline(ruteKoordinat, {color: '#0F4C81', weight: 5}).addTo(map);
                         map.fitBounds(polyline.getBounds(), {padding: [50, 50]});
                         
-                        // Tambahkan Marker Statis di awal dan akhir
                         L.circleMarker(titikJemput, {color: '#0F4C81', fillOpacity: 1, radius: 6}).addTo(map);
                         L.marker(titikTujuan).addTo(map);
 
-                        // PERHITUNGAN HARGA PRESISI
+                        // PERHITUNGAN HARGA 
                         let tarifDasar = 5000;
                         let tarifPerKm = 3000;
                         let totalHarga = tarifDasar + Math.round(jarakKm * tarifPerKm);
+                        hargaFinalSistem = `Rp ${totalHarga.toLocaleString('id-ID')}`;
                         
                         document.getElementById("teksJarak").innerText = `Jarak Tempuh: ${jarakKm} km`;
-                        document.getElementById("teksHarga").innerText = `Rp ${totalHarga.toLocaleString('id-ID')}`;
+                        document.getElementById("teksHarga").innerText = hargaFinalSistem;
                         
                         fareBox.style.display = "flex";
                         elemenLabelTitik.innerText = "Tujuan Anda:";
                         elemenTeksLokasi.innerText = namaTujuan;
                         elemenIconTitik.className = "fas fa-map-marker-alt";
                         
-                        btnMain.innerText = "Pesan Transportasi Sekarang";
+                        btnMain.innerText = "Pilih Metode Pembayaran";
                         btnMain.classList.remove("dropoff-mode");
                         btnMain.style.background = "#0F4C81";
                     } else {
-                        alert("Gagal menemukan rute. Titik mungkin tidak terjangkau kendaraan.");
+                        alert("Gagal menemukan rute kendaraan.");
                         location.reload();
                     }
-                })
-                .catch(err => {
-                    alert("Koneksi gagal saat menghitung rute.");
+                }).catch(err => {
+                    alert("Koneksi gagal.");
                     document.getElementById("loader").style.display = "none";
                     btnMain.disabled = false;
                 });
 
             } else if (modePeta === "PESAN") {
-                // EKSEKUSI PEMESANAN KE GOOGLE SHEETS
+                // PASTIKAN USER LOGIN SEBELUM BAYAR
                 if(!localStorage.getItem("userName")) {
-                    alert("Sistem mendeteksi Anda belum masuk akun. Silakan kembali ke Beranda untuk masuk.");
+                    alert("Anda belum login. Silakan kembali ke Beranda untuk masuk akun.");
                     return;
                 }
                 
-                let hargaFinal = document.getElementById("teksHarga").innerText;
-                
-                // Memanggil fungsi dari app.js (Jika app.js ditautkan)
-                if (typeof kirimPesanan === "function") {
-                    kirimPesanan("Transportasi (Ride)", namaJemput, namaTujuan, hargaFinal);
-                } else {
-                    // Fallback jika app.js lambat termuat
-                    alert(`Memproses Pesanan...\n\nJemput: ${namaJemput}\nTujuan: ${namaTujuan}\nTarif: ${hargaFinal}\n\nData berhasil diteruskan!`);
-                    window.location.href = "riwayat.html";
-                }
+                // MUNCULKAN MODAL PEMBAYARAN
+                document.getElementById('paymentOverlay').classList.add('active');
+                document.getElementById('paymentSheet').classList.add('active');
+                document.getElementById('tagihanQRIS').innerText = hargaFinalSistem;
+            }
+        }
+
+        // 6. LOGIKA MODAL PEMBAYARAN (QRIS & TUNAI)
+        let metodePembayaran = "";
+
+        function tutupPayment() {
+            document.getElementById('paymentOverlay').classList.remove('active');
+            document.getElementById('paymentSheet').classList.remove('active');
+        }
+
+        function pilihMetode(metode, elemen) {
+            metodePembayaran = metode;
+            document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
+            elemen.classList.add('active');
+
+            if(metode === "QRIS") {
+                document.getElementById('qrisArea').style.display = "block";
+            } else {
+                document.getElementById('qrisArea').style.display = "none";
+            }
+        }
+
+        function konfirmasiPesananFinal() {
+            if (metodePembayaran === "") {
+                alert("Silakan pilih metode pembayaran terlebih dahulu.");
+                return;
+            }
+            
+            tutupPayment();
+            let layananDetail = "Transportasi (Ride) - " + metodePembayaran;
+            
+            // Eksekusi pesanan ke Google Sheets (app.js)
+            if (typeof kirimPesanan === "function") {
+                kirimPesanan(layananDetail, namaJemput, namaTujuan, hargaFinalSistem);
+            } else {
+                alert(`Memproses Pesanan...\n\nJemput: ${namaJemput}\nTujuan: ${namaTujuan}\nTarif: ${hargaFinalSistem}\nMetode: ${metodePembayaran}\n\nData siap diteruskan ke server!`);
+                window.location.href = "riwayat.html";
             }
         }
     </script>
