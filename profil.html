@@ -17,151 +17,136 @@
         
         .top-bar { display: flex; align-items: center; padding: 20px; background: var(--white); }
         
-        /* Kartu Profil Utama */
+        /* KARTU PROFIL UTAMA (DENGAN UPLOAD FOTO) */
         .profile-card { background: var(--white); padding: 30px 20px; text-align: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .avatar { width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; margin: 0 auto 15px auto; }
-        .profile-card h2 { font-size: 20px; color: var(--text-dark); margin-bottom: 5px; font-weight: 600;}
-        .profile-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px;}
         
-        .btn-login-trigger { background: var(--accent); color: var(--white); border: none; padding: 10px 25px; border-radius: 12px; font-weight: 600; cursor: pointer; display: none; margin: 0 auto; font-size: 14px;}
-
-        /* Menu Pilihan */
+        .avatar-container { position: relative; width: 90px; height: 90px; margin: 0 auto 15px auto; }
+        .avatar { width: 100%; height: 100%; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; overflow: hidden; border: 3px solid var(--white); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .btn-edit-foto { position: absolute; bottom: 0; right: 0; background: var(--accent); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer; border: 2px solid var(--white); }
+        
+        .profile-card h2 { font-size: 20px; color: var(--text-dark); margin-bottom: 5px; font-weight: 600;}
+        .profile-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 3px;}
+        
+        /* Daftar Menu */
         .menu-list { padding: 20px; margin-top: 10px; }
         .menu-item { background: var(--white); padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; color: var(--text-dark); text-decoration: none; font-size: 14px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .menu-item i { color: var(--primary); font-size: 18px; width: 24px; text-align: center; }
         
         .btn-logout { width: 100%; background: #E53E3E; color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 20px; display: none; box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2); }
 
-        /* Navigasi Bawah */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50; }
         .nav-item { color: #C4C4C4; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
         .nav-item i { font-size: 20px; }
         .nav-item span { font-size: 10px; font-weight: 500; }
         .nav-item.active { color: var(--primary); }
-
-        /* Bottom Sheet Login Elegan */
-        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; visibility: hidden; transition: 0.3s; }
-        .overlay.active { opacity: 1; visibility: visible; }
-        .login-sheet { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); z-index: 100; padding: 30px 20px 40px 20px; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.4s ease; box-shadow: 0 -5px 20px rgba(0,0,0,0.15); }
-        .login-sheet.active { transform: translateY(0); }
-        .sheet-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
-        .input-group { margin-bottom: 15px; margin-top: 20px; }
-        .input-group input { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 14px; outline: none; background: #FAFAFA; transition: 0.3s; }
-        .input-group input:focus { border-color: var(--primary); background: var(--white); }
-        .btn-primary { width: 100%; padding: 16px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="top-bar">
-            <h2 style="font-size: 18px; margin: 0 auto; font-weight: 600; color: var(--text-dark);">Akun Saya</h2>
+            <h2 style="font-size: 18px; margin: 0 auto; font-weight: 600; color: var(--text-dark);">Profil Pengguna</h2>
         </div>
 
         <div class="profile-card">
-            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div class="avatar-container" id="areaFoto" style="display: none;">
+                <div class="avatar" id="tampilAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <input type="file" id="inputFoto" accept="image/*" style="display: none;" onchange="prosesGantiFoto(event)">
+                <label for="inputFoto" class="btn-edit-foto"><i class="fas fa-camera"></i></label>
+            </div>
+
             <h2 id="tampilNama">Belum Terdaftar</h2>
-            <p id="tampilWA">Silakan masuk untuk mengakses fitur penuh</p>
-            <button class="btn-login-trigger" id="btnLoginSekarang" onclick="bukaLogin()">Masuk Akun</button>
+            <p id="tampilWA" style="font-weight: 600;">Silakan kembali ke Beranda untuk Mendaftar</p>
+            <p id="tampilEmail"><i class="fas fa-envelope"></i> -</p>
+            <p id="tampilAlamat"><i class="fas fa-map-marker-alt"></i> -</p>
         </div>
 
         <div class="menu-list">
-            <a href="#" class="menu-item"><i class="fas fa-map-marker-alt"></i> Alamat Tersimpan</a>
+            <a href="#" class="menu-item"><i class="fas fa-heart"></i> Makanan Favorit</a>
             <a href="#" class="menu-item"><i class="fas fa-star"></i> Penilaian Anda</a>
-            <a href="#" class="menu-item"><i class="fas fa-headset"></i> Bantuan & Laporan</a>
+            <a href="#" class="menu-item"><i class="fas fa-headset"></i> Pusat Bantuan</a>
             
             <button class="btn-logout" id="btnKeluar" onclick="keluarAkun()">Keluar Akun</button>
         </div>
 
         <nav class="bottom-nav">
             <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Beranda</span></a>
-            <a href="receipt.html" class="nav-item"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
-            <a href="#" class="nav-item"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
+            <a href="riwayat.html" class="nav-item"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
+            <a href="pesan.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
             <a href="profil.html" class="nav-item active"><i class="fas fa-user"></i><span>Akun</span></a>
         </nav>
-
-        <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
-        <div class="login-sheet" id="loginSheet">
-            <div class="sheet-handle"></div>
-            <h2 style="color: var(--text-dark); font-size: 22px; margin-bottom: 5px;">Masuk Akun</h2>
-            <p style="color: var(--text-muted); font-size: 13px;">Masukkan data diri Anda dengan benar.</p>
-            
-            <div class="input-group"><input type="text" id="regName" placeholder="Nama Lengkap"></div>
-            <div class="input-group"><input type="tel" id="regPhone" placeholder="Nomor WhatsApp"></div>
-            
-            <button class="btn-primary" onclick="prosesMasuk()">Masuk & Simpan</button>
-        </div>
     </div>
 
     <script>
-        // Memeriksa status saat halaman dimuat
         window.onload = function() { cekStatusLogin(); };
 
         function cekStatusLogin() {
             let nama = localStorage.getItem("userName");
             let wa = localStorage.getItem("userPhone");
+            let email = localStorage.getItem("userEmail") || "Email belum diatur";
+            let alamat = localStorage.getItem("userAlamat") || "Alamat belum diatur";
+            let foto = localStorage.getItem("userPhoto");
             
             if (nama && wa) {
-                // Jika sudah login
+                // Tampilkan data diri
                 document.getElementById("tampilNama").innerText = nama;
                 document.getElementById("tampilWA").innerText = wa;
-                document.getElementById("btnLoginSekarang").style.display = "none";
+                document.getElementById("tampilEmail").innerHTML = `<i class="fas fa-envelope"></i> ${email}`;
+                document.getElementById("tampilAlamat").innerHTML = `<i class="fas fa-map-marker-alt"></i> ${alamat}`;
+                
+                // Tampilkan menu interaktif
+                document.getElementById("areaFoto").style.display = "block";
                 document.getElementById("btnKeluar").style.display = "block";
+
+                // Tampilkan foto jika sudah pernah upload
+                if(foto) {
+                    document.getElementById("tampilAvatar").innerHTML = `<img src="${foto}" alt="Foto Profil">`;
+                }
             } else {
-                // Jika belum login
-                document.getElementById("tampilNama").innerText = "Belum Terdaftar";
-                document.getElementById("tampilWA").innerText = "Silakan masuk untuk mengakses fitur penuh";
-                document.getElementById("btnLoginSekarang").style.display = "block";
+                document.getElementById("areaFoto").style.display = "none";
                 document.getElementById("btnKeluar").style.display = "none";
             }
         }
 
-        // Animasi Bottom Sheet
-        function bukaLogin() { 
-            document.getElementById("overlay").classList.add("active"); 
-            document.getElementById("loginSheet").classList.add("active"); 
-        }
-        function tutupLogin() { 
-            document.getElementById("overlay").classList.remove("active"); 
-            document.getElementById("loginSheet").classList.remove("active"); 
+        // FUNGSI GANTI FOTO (MENGGUNAKAN BASE64 LOKAL)
+        function prosesGantiFoto(event) {
+            let file = event.target.files[0];
+            if(!file) return;
+
+            // Membaca file gambar dari galeri HP
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let base64String = e.target.result;
+                
+                // Simpan kode gambar ke memori HP
+                localStorage.setItem("userPhoto", base64String);
+                
+                // Langsung perbarui tampilan
+                document.getElementById("tampilAvatar").innerHTML = `<img src="${base64String}" alt="Foto Profil">`;
+                alert("Foto profil berhasil diperbarui!");
+            };
+            
+            // Eksekusi pembacaan gambar
+            reader.readAsDataURL(file);
         }
 
-        // Proses Penyimpanan Sesi
-        function prosesMasuk() {
-            let nama = document.getElementById("regName").value;
-            let hp = document.getElementById("regPhone").value;
-            
-            if (nama === "" || hp === "") { 
-                alert("Mohon lengkapi data Anda."); 
-                return; 
-            }
-            
-            // Simpan ke memori HP
-            localStorage.setItem("userName", nama);
-            localStorage.setItem("userPhone", hp);
-            
-            // Jika Anda sudah memasang script backend pendaftaran di app.js
-            if(typeof kirimDataUserBaru === "function") { 
-                kirimDataUserBaru(nama, hp); 
-            }
-            
-            tutupLogin();
-            cekStatusLogin(); // Perbarui tampilan tanpa perlu merefresh halaman
-        }
-
-        // Proses Hapus Sesi (Logout)
+        // FUNGSI LOGOUT
         function keluarAkun() {
-            if (confirm("Apakah Anda yakin ingin keluar dari aplikasi?")) {
+            if (confirm("Apakah Anda yakin ingin menghapus sesi dari perangkat ini?")) {
                 localStorage.removeItem("userName");
                 localStorage.removeItem("userPhone");
-                localStorage.removeItem("userLokasi"); // Hapus riwayat lokasi
-                cekStatusLogin();
+                localStorage.removeItem("userEmail");
+                localStorage.removeItem("userAlamat");
+                localStorage.removeItem("userPhoto"); // Hapus foto juga
+                localStorage.removeItem("userLokasi");
                 
-                // Lempar kembali ke beranda agar dipaksa login dari awal
+                // Lempar ke beranda untuk login ulang
                 window.location.href = "index.html"; 
             }
         }
     </script>
-    
-    <script src="app.js"></script>
 </body>
 </html>
