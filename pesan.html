@@ -47,8 +47,8 @@
             <i class="fas fa-search"></i>
         </div>
 
-        <div class="chat-list">
-            <div class="chat-item">
+       <div class="chat-list">
+            <div class="chat-item" onclick="bukaObrolan('Agus (Mitra Pengemudi)', '08123456789')">
                 <div class="chat-avatar">
                     <i class="fas fa-motorcycle"></i>
                     <div class="chat-badge"></div>
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="chat-item">
+            <div class="chat-item" onclick="bukaObrolan('Boyolali App Support', '08999999999')">
                 <div class="chat-avatar" style="background: #FFFBEB; color: var(--accent);">
                     <i class="fas fa-headset"></i>
                 </div>
@@ -75,6 +75,20 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            function bukaObrolan(namaKontak, nomorWA) {
+                // Konsep MVP: Mengarahkan obrolan langsung ke WhatsApp
+                // Jika ingin membuat ruang chat di dalam aplikasi, ganti dengan window.location.href = "chat-room.html"
+                
+                let konfirmasi = confirm(`Buka obrolan dengan ${namaKontak}?`);
+                
+                if (konfirmasi) {
+                    // Mengarahkan ke WhatsApp
+                    window.open(`https://wa.me/${nomorWA}?text=Halo%20${namaKontak},%20saya%20dari%20aplikasi%20Nganterin.`, "_blank");
+                }
+            }
+        </script>
 
         <nav class="bottom-nav">
             <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Beranda</span></a>
