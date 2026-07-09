@@ -315,6 +315,41 @@
                 deferredPromptUtama = null;
             }
         });
+        // ==========================================
+// FUNGSI LOKASI REAL-TIME (GEOLOCATION)
+// ==========================================
+function dapatkanLokasi() {
+    const teksLokasi = document.getElementById("greetingName");
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async function(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            
+            try {
+                // Mengubah koordinat menjadi nama kota/kecamatan menggunakan API Gratis
+                let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                let data = await response.json();
+                
+                // Mengambil nama kota, kabupaten, atau kecamatan
+                let namaArea = data.address.city || data.address.county || data.address.town || data.address.village || "Lokasi Ditemukan";
+                
+                teksLokasi.innerHTML = namaArea + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
+                
+                // Simpan lokasi ke memori agar layanan lain tahu titik jemput default
+                localStorage.setItem("userLokasi", namaArea);
+                
+            } catch (error) {
+                console.log("Gagal membaca nama area: ", error);
+            }
+        }, function(error) {
+            console.log("Izin lokasi ditolak pengguna.");
+        });
+    }
+}
+
+// Panggil fungsi lokasi saat halaman beranda dimuat
+window.addEventListener('load', dapatkanLokasi);
     </script>
     
     <script>
