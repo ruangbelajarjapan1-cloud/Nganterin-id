@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Pesanan - Boyolali App</title>
+    <title>Riwayat & Pelacakan - Boyolali App</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
         :root { 
             --primary: #0F4C81; --primary-light: #EBF4FA; --accent: #F59E0B;
@@ -15,35 +19,32 @@
         body { background-color: #E5E5E5; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 480px; background-color: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 80px;}
         
-        .top-bar { padding: 20px 20px 10px 20px; background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 10; }
-        .top-bar h2 { font-size: 22px; color: var(--text-dark); font-weight: 700; margin-bottom: 15px;}
+        .top-bar { padding: 20px; background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 1000; }
+        .top-bar h2 { font-size: 20px; color: var(--text-dark); font-weight: 600; }
         
-        /* Tab Navigasi ala Gojek */
-        .tab-nav { display: flex; border-bottom: 2px solid #E0E0E0; }
-        .tab-btn { flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.3s; position: relative; }
-        .tab-btn.active { color: var(--primary); }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--primary); border-radius: 2px 2px 0 0; }
+        /* Area Peta Tracking Sederhana */
+        #mapTracking { width: 100%; height: 200px; z-index: 1; }
 
-        .tab-content { display: none; padding: 20px; animation: fadeIn 0.3s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Kartu Riwayat */
-        .history-card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .history-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #E0E0E0; padding-bottom: 10px; margin-bottom: 10px; }
-        .history-header h4 { font-size: 14px; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
-        .history-header h4 i { color: var(--primary); font-size: 16px; background: var(--primary-light); padding: 6px; border-radius: 8px; }
-        .badge { font-size: 11px; padding: 4px 8px; border-radius: 12px; font-weight: 600; }
-        .badge.proses { background: #FEF3C7; color: var(--accent-dark); }
-        .badge.selesai { background: #D1FAE5; color: #059669; }
+        /* Kartu Status Berjalan */
+        .status-card { background: var(--white); padding: 20px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;}
+        .driver-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #E0E0E0;}
+        .driver-avatar { width: 50px; height: 50px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; }
+        .driver-detail h4 { font-size: 15px; color: var(--text-dark); }
+        .driver-detail p { font-size: 12px; color: var(--text-muted); }
+        .driver-plate { background: var(--bg-gray); padding: 4px 8px; border-radius: 6px; font-weight: 700; color: var(--text-dark); font-size: 12px; border: 1px solid #E0E0E0; display: inline-block; margin-top: 5px;}
         
-        .history-body p { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 8px; }
-        .history-body p i { margin-top: 3px; color: #CBD5E1; }
-        .history-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
-        .history-footer .price { font-size: 15px; font-weight: 700; color: var(--text-dark); }
-        .btn-action { background: var(--primary-light); color: var(--primary); border: none; padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .order-status h3 { font-size: 16px; color: var(--primary); font-weight: 700; margin-bottom: 5px;}
+        .order-status p { font-size: 12px; color: var(--text-muted); }
 
-        /* Navigasi Bawah */
+        /* Pop-up Rating Modal */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; display: none; justify-content: center; align-items: center;}
+        .rating-modal { background: var(--white); width: 85%; max-width: 320px; padding: 30px 20px; border-radius: 20px; text-align: center; transform: scale(0.9); animation: popIn 0.3s forwards;}
+        @keyframes popIn { to { transform: scale(1); } }
+        .rating-modal h2 { color: var(--text-dark); font-size: 18px; margin-bottom: 10px; }
+        .stars { display: flex; justify-content: center; gap: 10px; margin: 20px 0; font-size: 30px; color: #E0E0E0; cursor: pointer;}
+        .stars i.active { color: var(--accent); }
+        .btn-submit { width: 100%; padding: 14px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-weight: 600; cursor: pointer;}
+
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50; }
         .nav-item { color: #C4C4C4; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
         .nav-item i { font-size: 20px; }
@@ -54,44 +55,43 @@
 <body>
     <div class="app-container">
         <div class="top-bar">
-            <h2>Riwayat Pesanan</h2>
-            <div class="tab-nav">
-                <div class="tab-btn active" onclick="bukaTab('proses', this)">Sedang Berjalan</div>
-                <div class="tab-btn" onclick="bukaTab('selesai', this)">Selesai</div>
-            </div>
+            <h2>Pesanan Aktif</h2>
         </div>
 
-        <div id="proses" class="tab-content active">
-            <div class="history-card">
-                <div class="history-header">
-                    <h4><i class="fas fa-utensils"></i> Makanan</h4>
-                    <span class="badge proses">Diantar</span>
-                </div>
-                <div class="history-body">
-                    <p><i class="fas fa-store"></i> Sate Sapi Pak Manto</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Jl. Merdeka No. 10 (Kantor Bupati)</p>
-                </div>
-                <div class="history-footer">
-                    <span class="price">Rp 60.000</span>
-                    <button class="btn-action" style="background: var(--accent); color: white;">Lacak Driver</button>
+        <div id="mapTracking"></div>
+
+        <div class="status-card">
+            <div class="driver-info">
+                <div class="driver-avatar"><i class="fas fa-user-circle"></i></div>
+                <div class="driver-detail">
+                    <h4>Agus Setiawan</h4>
+                    <p><i class="fas fa-star" style="color: var(--accent);"></i> 4.9 (Honda Vario)</p>
+                    <div class="driver-plate">AD 1234 XX</div>
                 </div>
             </div>
+            <div class="order-status">
+                <h3 id="teksStatus">Driver Menuju Lokasi Jemput</h3>
+                <p>Estimasi tiba: 5 Menit</p>
+            </div>
+            
+            <button onclick="pesananSelesai()" style="width: 100%; margin-top: 20px; padding: 10px; border-radius: 8px; background: #D1FAE5; color: #059669; border: none; font-weight: bold;">Simulasi: Pesanan Selesai</button>
         </div>
 
-        <div id="selesai" class="tab-content">
-            <div class="history-card">
-                <div class="history-header">
-                    <h4><i class="fas fa-motorcycle"></i> Transportasi</h4>
-                    <span class="badge selesai">Selesai</span>
+        <div class="overlay" id="ratingOverlay">
+            <div class="rating-modal">
+                <i class="fas fa-check-circle" style="font-size: 50px; color: #059669; margin-bottom: 15px;"></i>
+                <h2>Pesanan Selesai!</h2>
+                <p style="font-size: 12px; color: var(--text-muted);">Bagaimana pelayanan pengemudi dan kualitas UMKM lokal kita hari ini?</p>
+                
+                <div class="stars" id="starContainer">
+                    <i class="fas fa-star" onclick="beriRating(1)"></i>
+                    <i class="fas fa-star" onclick="beriRating(2)"></i>
+                    <i class="fas fa-star" onclick="beriRating(3)"></i>
+                    <i class="fas fa-star" onclick="beriRating(4)"></i>
+                    <i class="fas fa-star" onclick="beriRating(5)"></i>
                 </div>
-                <div class="history-body">
-                    <p><i class="fas fa-dot-circle" style="color: var(--primary);"></i> Alun-alun Boyolali</p>
-                    <p><i class="fas fa-map-marker-alt" style="color: #E53E3E;"></i> Terminal Lama</p>
-                </div>
-                <div class="history-footer">
-                    <span class="price">Rp 12.000</span>
-                    <button class="btn-action" onclick="window.location.href='receipt.html'">Lihat Resi</button>
-                </div>
+
+                <button class="btn-submit" onclick="kirimRating()">Kirim Penilaian</button>
             </div>
         </div>
 
@@ -104,11 +104,48 @@
     </div>
 
     <script>
-        function bukaTab(idTab, elemen) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(idTab).classList.add('active');
-            elemen.classList.add('active');
+        // Inisialisasi Peta Pelacakan Statis (Leaflet Gratis)
+        let map = L.map('mapTracking', {zoomControl: false, dragging: false}).setView([-7.5333, 110.6000], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        
+        // Marker Driver (Warna Biru)
+        let driverMarker = L.circleMarker([-7.5333, 110.6000], {color: '#0F4C81', radius: 8, fillOpacity: 1}).addTo(map);
+        
+        // Marker Pelanggan (Warna Merah)
+        let custMarker = L.circleMarker([-7.5400, 110.6050], {color: '#E53E3E', radius: 8, fillOpacity: 1}).addTo(map);
+        
+        // Tarik Garis Rute Sementara
+        L.polyline([driverMarker.getLatLng(), custMarker.getLatLng()], {color: '#0F4C81', weight: 3, dashArray: '5, 5'}).addTo(map);
+
+        // LOGIKA RATING BINTANG
+        let ratingDipilih = 0;
+        function beriRating(jumlahBintang) {
+            ratingDipilih = jumlahBintang;
+            let stars = document.getElementById("starContainer").children;
+            for (let i = 0; i < stars.length; i++) {
+                if (i < jumlahBintang) {
+                    stars[i].classList.add("active");
+                } else {
+                    stars[i].classList.remove("active");
+                }
+            }
+        }
+
+        function pesananSelesai() {
+            document.getElementById("teksStatus").innerText = "Pesanan Telah Selesai";
+            document.getElementById("teksStatus").style.color = "#059669";
+            document.getElementById("ratingOverlay").style.display = "flex";
+        }
+
+        function kirimRating() {
+            if(ratingDipilih === 0) {
+                alert("Mohon berikan bintang terlebih dahulu.");
+                return;
+            }
+            // Logika untuk menembak data ke Google Sheets bisa dimasukkan ke sini (Memanggil fungsi dari app.js)
+            alert("Terima kasih! Penilaian " + ratingDipilih + " bintang Anda sangat membantu ekosistem UMKM lokal kita.");
+            document.getElementById("ratingOverlay").style.display = "none";
+            window.location.href = "receipt.html"; // Arahkan ke setruk digital yang fit A4
         }
     </script>
 </body>
