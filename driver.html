@@ -2,95 +2,169 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boyolali App - Mitra Pengemudi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aplikasi Mitra Driver</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
-        /* TEMA WARNA BARU: Biru Elegan & Emas/Oranye */
-        :root {
-            --primary: #0F4C81;         /* Biru Premium / Navy */
-            --primary-dark: #0A365D;    /* Biru Gelap */
-            --primary-light: #EBF4FA;   /* Biru Sangat Muda (Latar Ikon) */
-            --accent: #F59E0B;          /* Emas / Oranye (Aksen Tombol/Bintang) */
-            --accent-dark: #D97706;     /* Emas Gelap */
-            --bg-gray: #F8F9FA;         /* Abu-abu Latar */
-            --text-dark: #2D3748;       /* Hitam Elegan */
-            --text-muted: #718096;      /* Abu-abu Teks */
-            --white: #FFFFFF;           /* Putih */
+        :root { 
+            --primary: #0F4C81; --accent: #F59E0B; --bg-gray: #F8F9FA; 
+            --white: #FFFFFF; --text-dark: #2D3748; --text-muted: #718096;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #121212; color: white; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background-color: #1A1A1A; min-height: 100vh; padding: 25px 20px; position: relative; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
+        body { background-color: #333; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--white); height: 100vh; position: relative; overflow: hidden; display: flex; flex-direction: column;}
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h2 { color: #E8F5E9; font-size: 18px; font-weight: 600; }
-        .header h2 span { color: #1A7332; }
-        .profile-img { width: 42px; height: 42px; background: #2D3748; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #A0AEC0; }
-
-        /* Tombol Online/Offline */
-        .status-toggle { background: #2D3748; padding: 25px 20px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
-        .btn-status { width: 100%; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; letter-spacing: 0.5px; }
-        .btn-status.offline { background: #4A5568; color: #CBD5E0; }
-        .btn-status.online { background: #1A7332; color: white; box-shadow: 0 4px 15px rgba(26, 115, 50, 0.4); }
-
-        /* Kartu Pendapatan */
-        .income-card { background: linear-gradient(135deg, #1A7332, #125524); padding: 25px 20px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
-        .income-card p { font-size: 13px; opacity: 0.9; margin-bottom: 8px; }
-        .income-card h1 { font-size: 32px; margin-bottom: 12px; font-weight: 700; }
+        /* Header Driver */
+        .driver-header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1000; position: absolute; top: 0; width: 100%;}
+        .driver-profile { display: flex; align-items: center; gap: 10px; }
+        .driver-profile h3 { font-size: 15px; color: var(--text-dark); }
+        .driver-profile p { font-size: 11px; color: var(--primary); font-weight: 600;}
         
-        .income-stats { display: flex; justify-content: center; gap: 20px; font-size: 12px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 10px; display: inline-flex; margin: 0 auto; }
+        /* Toggle Online */
+        .toggle-container { display: flex; align-items: center; gap: 8px; }
+        .toggle-text { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #059669; }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-        /* Pop-up Order Masuk */
-        .order-popup { background: white; color: #1A1A1A; padding: 20px; border-radius: 16px; margin-top: 20px; border-left: 8px solid #DD6B20; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .order-popup h3 { color: #DD6B20; margin-bottom: 15px; font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center;}
-        .order-detail { font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
-        .order-detail p i { width: 20px; color: #718096; text-align: center; margin-right: 5px; }
-        .ongkir-highlight { font-size: 16px; font-weight: 700; color: #1A7332; margin-top: 10px; display: inline-block; background: #E8F5E9; padding: 5px 10px; border-radius: 8px; }
+        #mapDriver { flex: 1; width: 100%; z-index: 1; margin-top: 70px; }
+
+        /* Panel Bawah (Info Saldo) */
+        .bottom-panel { background: var(--white); border-radius: 20px 20px 0 0; padding: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1000; display: flex; justify-content: space-between;}
+        .earn-box { text-align: center; flex: 1; border-right: 1px solid #EAEAEA;}
+        .earn-box:last-child { border-right: none; }
+        .earn-box p { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;}
+        .earn-box h4 { font-size: 16px; color: var(--text-dark); }
+
+        /* Pop-Up Order Masuk */
+        .order-modal { position: absolute; bottom: 20px; left: 20px; right: 20px; background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1005; border-top: 5px solid var(--accent); display: none; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0;} to { transform: translateY(0); opacity: 1; } }
+        .order-modal h2 { font-size: 16px; color: var(--text-dark); margin-bottom: 15px; text-align: center;}
         
-        /* Tombol Aksi */
-        .action-buttons { display: flex; gap: 10px; }
-        .btn-terima { flex: 2; padding: 15px; background: #1A7332; color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; }
-        .btn-tolak { flex: 1; padding: 15px; background: #E2E8F0; color: #4A5568; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; }
-        .btn-terima:active, .btn-tolak:active { transform: scale(0.98); }
+        .route-detail { background: var(--bg-gray); padding: 15px; border-radius: 10px; margin-bottom: 15px;}
+        .r-item { margin-bottom: 10px; font-size: 13px; color: var(--text-dark); }
+        .r-item:last-child { margin-bottom: 0; }
+        .r-item i { width: 20px; color: var(--primary); }
+        
+        .price-tag { text-align: center; font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 15px;}
+        
+        .btn-group { display: flex; gap: 10px; }
+        .btn-reject { flex: 1; padding: 14px; background: #FEE2E2; color: #E53E3E; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .btn-accept { flex: 2; padding: 14px; background: #059669; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3); }
+
+        /* Floating Action Button (Back to Home) */
+        .fab-home { position: absolute; bottom: 100px; right: 20px; width: 50px; height: 50px; background: var(--primary-dark); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 999;}
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="header">
-            <h2>Boyolali <span>Driver</span></h2>
-            <div class="profile-img"><i class="fas fa-user"></i></div>
-        </div>
-
-        <div class="status-toggle">
-            <p style="margin-bottom: 15px; font-size: 13px; color: #A0AEC0;">Ketuk tombol di bawah untuk mulai menerima pesanan</p>
-            <button class="btn-status offline" id="statusBtn" onclick="toggleStatus()">AKTIFKAN STATUS</button>
-        </div>
-
-        <div class="income-card">
-            <p>Pendapatan Hari Ini</p>
-            <h1>Rp 145.000</h1>
-            <div class="income-stats">
-                <span><i class="fas fa-check-circle"></i> 8 Selesai</span>
-                <span><i class="fas fa-star" style="color: #F6E05E;"></i> 4.9 Rating</span>
+        <div class="driver-header">
+            <div class="driver-profile">
+                <img src="https://ui-avatars.com/api/?name=Agus&background=0F4C81&color=fff" style="width: 40px; border-radius: 50%;">
+                <div>
+                    <h3>Agus Setiawan</h3>
+                    <p>Saldo Deposit: Rp 75.000</p>
+                </div>
+            </div>
+            <div class="toggle-container">
+                <span class="toggle-text" id="statusText">Offline</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleOnline" onchange="ubahStatus(this)">
+                    <span class="slider"></span>
+                </label>
             </div>
         </div>
 
-        <div class="order-popup" id="notifOrder">
-            <h3><span><i class="fas fa-bell"></i> Pesanan Baru!</span> <span style="font-size: 12px; color: #718096; font-weight: normal;">Baru saja</span></h3>
-            <div class="order-detail" id="detailOrderData">
-                <p><i class="fas fa-store"></i> <strong>Jemput:</strong> Sate Sapi Pak Manto</p>
-                <p><i class="fas fa-map-marker-alt"></i> <strong>Antar:</strong> Jl. Merdeka No. 10 (Kantor Bupati)</p>
-                <div class="ongkir-highlight">Tarif: Rp 12.000</div>
+        <div id="mapDriver"></div>
+
+        <div class="bottom-panel">
+            <div class="earn-box">
+                <p>Pendapatan Hari Ini</p>
+                <h4>Rp 125.000</h4>
             </div>
-            <div class="action-buttons">
-                <button class="btn-tolak" onclick="tolakOrder()">Abaikan</button>
-                <button class="btn-terima" onclick="terimaOrder()">TERIMA</button>
+            <div class="earn-box">
+                <p>Total Pesanan</p>
+                <h4>8 Selesai</h4>
+            </div>
+        </div>
+
+        <a href="index.html" class="fab-home"><i class="fas fa-home"></i></a>
+
+        <!-- Pop Up Pesanan Masuk (Sembunyikan nomor WA Pelanggan demi privasi) -->
+        <div class="order-modal" id="orderModal">
+            <h2>Pesanan Baru Masuk!</h2>
+            <div class="route-detail">
+                <div class="r-item"><i class="fas fa-dot-circle"></i> Alun-alun Boyolali</div>
+                <div class="r-item"><i class="fas fa-map-marker-alt" style="color: #E53E3E;"></i> Terminal Baru</div>
+                <div class="r-item" style="margin-top: 10px; font-weight: 600; color: #059669;"><i class="fas fa-money-bill-wave"></i> Pembayaran: Tunai</div>
+            </div>
+            <div class="price-tag">Rp 12.000</div>
+            <div class="btn-group">
+                <button class="btn-reject" onclick="abaikanOrder()">Abaikan</button>
+                <button class="btn-accept" onclick="terimaOrder()">Terima Order</button>
             </div>
         </div>
     </div>
 
-    <script src="driver.js"></script>
+    <script>
+        // Inisialisasi Peta Driver
+        let map = L.map('mapDriver', {zoomControl: false}).setView([-7.5333, 110.6000], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        let driverMarker;
+
+        // Simulasi Titik GPS Driver
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                let lat = position.coords.latitude;
+                let lng = position.coords.longitude;
+                map.setView([lat, lng], 16);
+                driverMarker = L.marker([lat, lng]).addTo(map);
+            });
+        }
+
+        function ubahStatus(checkbox) {
+            let teksStatus = document.getElementById("statusText");
+            if (checkbox.checked) {
+                teksStatus.innerText = "Online";
+                teksStatus.style.color = "#059669";
+                
+                // Simulasi pesanan masuk setelah online 3 detik
+                setTimeout(() => {
+                    document.getElementById("orderModal").style.display = "block";
+                }, 3000);
+            } else {
+                teksStatus.innerText = "Offline";
+                teksStatus.style.color = "var(--text-muted)";
+                document.getElementById("orderModal").style.display = "none";
+            }
+        }
+
+        function abaikanOrder() {
+            document.getElementById("orderModal").style.display = "none";
+        }
+
+        function terimaOrder() {
+            document.getElementById("orderModal").style.display = "none";
+            
+            // Logika Privasi: Tawarkan kontak WA setelah pesanan sah diterima
+            let konfirmasi = confirm("Pesanan diterima! Rute telah diaktifkan.\n\nApakah Anda ingin langsung mengirim pesan otomatis ke pelanggan bahwa Anda sedang meluncur?");
+            
+            if(konfirmasi) {
+                // Anggap ini membaca data WA dari server secara aman di latar belakang
+                let noWAPelanggan = "628123456789"; 
+                let pesanTemplate = "Halo kak, saya Agus dari Boyolali App. Saya sedang meluncur ke lokasi jemput ya.";
+                window.open(`https://wa.me/${noWAPelanggan}?text=${encodeURIComponent(pesanTemplate)}`, "_blank");
+            }
+        }
+    </script>
+    <script src="app.js"></script>
 </body>
 </html>
