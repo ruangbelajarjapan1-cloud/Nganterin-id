@@ -271,27 +271,61 @@
         }
 
         // FUNGSI DAFTAR / LOGIN
+      // LOGIKA LOGIN DENGAN SIMULASI OTP WHATSAPP
+        let dataSementara = {};
+
         function prosesDaftar() {
             let nama = document.getElementById("regName").value;
             let hp = document.getElementById("regPhone").value;
-            
-            if (nama === "" || hp === "") { 
-                alert("Mohon lengkapi nama dan nomor WhatsApp."); 
-                return; 
+
+            if (nama === "" || hp === "") {
+                alert("Isi nama dan nomor WA dulu ya!");
+                return;
             }
+
+            // Simpan data sementara
+            dataSementara = { nama: nama, hp: hp };
+
+            // Ubah Tampilan Bottom Sheet menjadi Form OTP
+            let loginSheet = document.getElementById("loginSheet");
+            loginSheet.innerHTML = `
+                <div class="sheet-handle"></div>
+                <h2 style="color: var(--primary); font-size: 24px; margin-bottom: 5px;">Verifikasi WA</h2>
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Kami telah mengirimkan 4 digit kode OTP ke nomor <strong>${hp}</strong>.</p>
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; justify-content: center;">
+                    <input type="text" id="otp1" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
+                    <input type="text" id="otp2" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
+                    <input type="text" id="otp3" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
+                    <input type="text" id="otp4" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
+                </div>
+                
+                <button class="btn-primary" onclick="verifikasiOTP()">Verifikasi & Masuk</button>
+                <p style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--primary); cursor: pointer;">Kirim Ulang Kode</p>
+            `;
             
+            // Auto Focus untuk input OTP
+            document.getElementById("otp1").focus();
+            
+            // Note: Pada sistem asli, di titik ini app.js memanggil Fonnte API untuk kirim WA
+            alert("Simulasi: Anggap saja ada pesan masuk ke WA berisi kode OTP.");
+        }
+
+        function verifikasiOTP() {
+            // Simulasi: Berapa pun angka yang dimasukkan, dianggap benar untuk keperluan Demo
+            let nama = dataSementara.nama;
+            let hp = dataSementara.hp;
+
             localStorage.setItem("userName", nama);
             localStorage.setItem("userPhone", hp);
             
-            // Panggil fungsi sinkronisasi ke server (ada di app.js)
-            if(typeof kirimDataUserBaru === "function") {
-                kirimDataUserBaru(nama, hp);
-            }
+            if(typeof kirimDataUserBaru === "function") { kirimDataUserBaru(nama, hp); }
             
-            tutupSemuaModal();
-            document.getElementById("greetingName").innerHTML = nama + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
+            tutupLogin();
+            document.getElementById("greetingSub").innerText = "Halo, sugeng rawuh";
+            document.getElementById("greetingName").innerHTML = nama + " 👋";
+            alert("Verifikasi Berhasil! Akun Anda telah aman.");
         }
-
         // LOGIKA PEMICU INSTALL PWA
         let deferredPromptUtama;
         window.addEventListener('beforeinstallprompt', (e) => {
