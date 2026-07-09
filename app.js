@@ -1,4 +1,4 @@
-// 1. URL DARI GOOGLE APPS SCRIPT (Ganti dengan link URL Web App Anda nanti)
+// 1. URL DARI GOOGLE APPS SCRIPT 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7HWyhEbbwN6U8xG-rrpXFnPXnNjhBqKE62EveIn1I4ojVBNnyRkMCFmdo7bq_yOcKYg/exec";
 
 // 2. REGISTRASI SERVICE WORKER (PWA)
@@ -25,8 +25,9 @@ async function kirimPesanan(layanan, detailJemput, detailTujuan, harga) {
     btn.innerText = "Memproses...";
     btn.disabled = true;
 
-    // Siapkan data yang akan dikirim
+    // Siapkan data yang akan dikirim (DITAMBAH PARAMETER ACTION AGAR BACKEND PAHAM)
     let dataKirim = new URLSearchParams({
+        "action": "pesan_layanan", 
         "layanan": layanan,
         "nama": namaUser,
         "wa": hpUser,
@@ -44,27 +45,28 @@ async function kirimPesanan(layanan, detailJemput, detailTujuan, harga) {
         
         let hasil = await response.text();
         
-        if (hasil === "Sukses") {
-            alert("Pesanan Berhasil Dibuat! Driver kami akan segera menghubungi WA Anda.");
-            window.location.href = "index.html"; // Kembali ke beranda
+        // Disesuaikan dengan respon ContentService dari backend Anda
+        if (hasil === "Pesanan Sukses") { 
+            alert("Pesanan Berhasil Dibuat! Silakan pantau status pesanan Anda.");
+            window.location.href = "riwayat.html"; // Diarahkan ke riwayat agar logis
         } else {
-            alert("Terjadi kesalahan sistem. Coba lagi.");
+            alert("Terjadi kesalahan sistem: " + hasil);
         }
     } catch (error) {
         alert("Gagal terhubung ke server. Pastikan internet Anda stabil.");
     } finally {
         // Kembalikan tombol seperti semula
-        btn.innerText = teksAsli;
-        btn.disabled = false;
+        if(btn) {
+            btn.innerText = teksAsli;
+            btn.disabled = false;
+        }
     }
 }
-// ==============================================================
-// TAMBAHAN KODE: MENGIRIM DATA USER BARU KE GOOGLE SHEETS
-// Diletakkan di baris paling bawah app.js tanpa mengubah kode di atasnya
-// ==============================================================
 
+// ==============================================================
+// 4. FUNGSI MENGIRIM DATA USER BARU KE GOOGLE SHEETS
+// ==============================================================
 async function kirimDataUserBaru(namaUser, waUser) {
-    // Pastikan SCRIPT_URL menggunakan link dari Google Apps Script Anda yang terbaru
     const URL_SERVER = SCRIPT_URL; 
     
     // Siapkan data dengan parameter 'action' = 'daftar_user'
@@ -75,7 +77,7 @@ async function kirimDataUserBaru(namaUser, waUser) {
     });
 
     try {
-        // Tembakkan data ke server Google Sheets secara diam-diam (background process)
+        // Tembakkan data ke server Google Sheets secara diam-diam
         let response = await fetch(URL_SERVER, {
             method: 'POST',
             body: dataKirim
