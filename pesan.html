@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesan - Boyolali App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #0F4C81; --primary-light: #EBF4FA; --accent: #F59E0B;
+            --bg-gray: #F8F9FA; --white: #FFFFFF; --text-dark: #2D3748; --text-muted: #718096;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
+        body { background-color: #E5E5E5; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--white); min-height: 100vh; position: relative; padding-bottom: 80px;}
+        
+        .top-bar { padding: 20px 20px 15px 20px; background: var(--white); border-bottom: 1px solid #F0F0F0; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center;}
+        .top-bar h2 { font-size: 22px; color: var(--text-dark); font-weight: 700; }
+        .top-bar i { font-size: 20px; color: var(--text-dark); }
+
+        /* Daftar Chat */
+        .chat-list { padding: 10px 20px; }
+        .chat-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid #F0F0F0; cursor: pointer; }
+        .chat-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: var(--primary-light); color: var(--primary); display: flex; justify-content: center; align-items: center; font-size: 20px; position: relative; flex-shrink: 0;}
+        .chat-badge { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #E53E3E; border: 2px solid var(--white); border-radius: 50%; }
+        
+        .chat-info { flex: 1; overflow: hidden; }
+        .chat-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .chat-header h4 { font-size: 15px; color: var(--text-dark); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-header span { font-size: 11px; color: var(--text-muted); }
+        .chat-info p { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-info p.unread { color: var(--text-dark); font-weight: 600; }
+
+        /* Navigasi Bawah */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50; }
+        .nav-item { color: #C4C4C4; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
+        .nav-item i { font-size: 20px; }
+        .nav-item span { font-size: 10px; font-weight: 500; }
+        .nav-item.active { color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="top-bar">
+            <h2>Pesan Masuk</h2>
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div class="chat-list">
+            <div class="chat-item">
+                <div class="chat-avatar">
+                    <i class="fas fa-motorcycle"></i>
+                    <div class="chat-badge"></div>
+                </div>
+                <div class="chat-info">
+                    <div class="chat-header">
+                        <h4>Agus (Mitra Pengemudi)</h4>
+                        <span>14:30</span>
+                    </div>
+                    <p class="unread">Halo kak, pesanan sesuai aplikasi ya? Saya jalan ke resto sekarang.</p>
+                </div>
+            </div>
+
+            <div class="chat-item">
+                <div class="chat-avatar" style="background: #FFFBEB; color: var(--accent);">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="chat-info">
+                    <div class="chat-header">
+                        <h4>Boyolali App Support</h4>
+                        <span>Kemarin</span>
+                    </div>
+                    <p>Terima kasih atas laporan Anda. Keluhan telah kami tindaklanjuti.</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Beranda</span></a>
+            <a href="riwayat.html" class="nav-item"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
+            <a href="pesan.html" class="nav-item active"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
+            <a href="profil.html" class="nav-item"><i class="fas fa-user"></i><span>Akun</span></a>
+        </nav>
+    </div>
+</body>
+</html>
