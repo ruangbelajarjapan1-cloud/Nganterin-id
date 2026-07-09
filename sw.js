@@ -1,5 +1,5 @@
 // Naikkan versi setiap kali Anda mengubah HTML/CSS/JS agar memori lama terhapus
-const CACHE_NAME = "nganterin-v4"; 
+const CACHE_NAME = "nganterin-v5"; 
 
 const urlsToCache = [
   "./",
