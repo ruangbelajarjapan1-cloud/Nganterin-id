@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layanan - Boyolali App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #0F4C81; --primary-light: #EBF4FA; --accent: #F59E0B;
+            --bg-gray: #F8F9FA; --white: #FFFFFF; --text-dark: #2D3748; --text-muted: #718096;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #E5E5E5; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--white); min-height: 100vh; position: relative; overflow-x: hidden; text-align: center; padding-bottom: 80px;}
+        
+        .top-bar { display: flex; align-items: center; padding: 20px; background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn-back { font-size: 20px; color: var(--text-dark); text-decoration: none; margin-right: 15px; }
+        .top-bar h2 { font-size: 18px; color: var(--text-dark); font-weight: 600; }
+
+        .construction-content { padding: 60px 20px; }
+        .icon-wrapper { width: 100px; height: 100px; background: var(--primary-light); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px auto; font-size: 40px; color: var(--accent); }
+        h3 { color: var(--text-dark); font-size: 20px; margin-bottom: 10px; }
+        p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
+        .btn-back-home { background: var(--primary); color: var(--white); text-decoration: none; padding: 14px 30px; border-radius: 12px; font-weight: 600; font-size: 14px; display: inline-block; box-shadow: 0 4px 15px rgba(15, 76, 129, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="top-bar">
+            <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+            <h2>Layanan Baru</h2>
+        </div>
+
+        <div class="construction-content">
+            <div class="icon-wrapper"><i class="fas fa-tools"></i></div>
+            <h3>Segera Hadir!</h3>
+            <p>Fitur ini sedang dalam tahap pengembangan untuk memberikan pengalaman transaksi yang aman, legal, dan optimal bagi seluruh ekosistem lokal.</p>
+            <a href="index.html" class="btn-back-home">Kembali ke Beranda</a>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
