@@ -147,7 +147,7 @@
                     <p>Saldo BoyolaliPay</p>
                     <h4>Rp 150.000</h4>
                 </div>
-                <div class="top-up-btn">Top Up <i class="fas fa-plus-circle" style="margin-left: 4px;"></i></div>
+               <a href="topup.html" class="top-up-btn" style="text-decoration: none;">Top Up <i class="fas fa-plus-circle" style="margin-left: 4px;"></i></a>
             </div>
 
             <!-- MENU UTAMA 8 IKON (FULL TERTANAM LINK-NYA) -->
@@ -321,8 +321,7 @@
             
             if(typeof kirimDataUserBaru === "function") { kirimDataUserBaru(nama, hp); }
             
-            tutupLogin();
-            document.getElementById("greetingSub").innerText = "Halo, sugeng rawuh";
+            tutupSemuaModal(); // <--- NAMA FUNGSI SUDAH DIPERBAIKI
             document.getElementById("greetingName").innerHTML = nama + " 👋";
             alert("Verifikasi Berhasil! Akun Anda telah aman.");
         }
