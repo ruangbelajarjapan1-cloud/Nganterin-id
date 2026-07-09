@@ -3,121 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nganterin Ride</title>
+    <title>Transportasi - Boyolali App</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
-       /* TEMA WARNA BARU: Biru Elegan & Emas/Oranye */
-        :root {
-            --primary: #0F4C81;         /* Biru Premium / Navy */
-            --primary-dark: #0A365D;    /* Biru Gelap */
-            --primary-light: #EBF4FA;   /* Biru Sangat Muda (Latar Ikon) */
-            --accent: #F59E0B;          /* Emas / Oranye (Aksen Tombol/Bintang) */
-            --accent-dark: #D97706;     /* Emas Gelap */
-            --bg-gray: #F8F9FA;         /* Abu-abu Latar */
-            --text-dark: #2D3748;       /* Hitam Elegan */
-            --text-muted: #718096;      /* Abu-abu Teks */
-            --white: #FFFFFF;           /* Putih */
+        :root { 
+            --primary: #0F4C81; --primary-dark: #0A365D; --accent: #F59E0B;
+            --bg-gray: #F8F9FA; --white: #FFFFFF; --text-dark: #2D3748; --text-muted: #718096;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
         body { background-color: #E5E5E5; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background-color: var(--bg-gray); min-height: 100vh; position: relative; overflow-x: hidden; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--white); height: 100vh; position: relative; overflow: hidden; display: flex; flex-direction: column;}
         
-        .top-bar { display: flex; align-items: center; padding: 20px; background: var(--white); }
-        .btn-back { font-size: 20px; color: var(--text-dark); text-decoration: none; margin-right: 15px; }
-        .top-bar h2 { font-size: 18px; color: var(--text-dark); }
+        .top-bar { position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px; display: flex; align-items: center; pointer-events: none;}
+        .btn-back { background: var(--white); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: var(--text-dark); text-decoration: none; pointer-events: auto; font-size: 18px;}
+        
+        /* Area Peta */
+        #map { flex: 1; width: 100%; z-index: 1; }
+        
+        /* Penanda Peta di Tengah (Marker UX ala Gojek) */
+        .center-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; font-size: 40px; color: var(--text-dark); pointer-events: none; transition: 0.2s ease-out; margin-top: -80px; text-shadow: 0 4px 5px rgba(0,0,0,0.3);}
+        .center-marker.is-dropoff { color: #E53E3E; }
+        
+        /* Panel Bawah Pemesanan */
+        .bottom-panel { background: var(--white); border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); padding: 25px 20px 30px 20px; z-index: 1000; position: relative; transition: 0.3s;}
+        .sheet-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
+        
+        .address-box { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: var(--bg-gray); padding: 15px; border-radius: 12px;}
+        .address-box i { font-size: 20px; }
+        .address-info p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
+        .address-info h4 { font-size: 14px; color: var(--text-dark); margin-top: 2px;}
 
-        /* Map Placeholder */
-        .map-area { height: 250px; background: url('https://via.placeholder.com/480x250?text=Peta+Lokasi+Boyolali') center/cover; }
+        .fare-box { display: none; justify-content: space-between; align-items: center; padding: 15px 0; border-top: 1px dashed #E0E0E0; margin-bottom: 15px;}
+        .fare-info h3 { color: var(--text-dark); font-size: 16px;}
+        .fare-info p { color: var(--text-muted); font-size: 12px;}
+        .fare-price { font-size: 22px; font-weight: 700; color: var(--primary);}
 
-        /* Form Card */
-        .form-card { background: var(--white); border-radius: 20px 20px 0 0; padding: 25px 20px; margin-top: -20px; position: relative; min-height: 400px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .location-input { display: flex; align-items: center; background: #F8F9FA; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; }
-        .location-input i { color: var(--primary); font-size: 20px; margin-right: 15px; width: 20px; text-align: center; }
-        .location-input input { border: none; background: transparent; width: 100%; font-size: 14px; outline: none; }
-        .location-input.dest i { color: #FF3D00; }
+        .btn-action { width: 100%; padding: 16px; background: var(--primary); color: var(--white); border: none; border-radius: 15px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(15, 76, 129, 0.3); transition: 0.3s;}
+        .btn-action.dropoff-mode { background: #E53E3E; box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3); }
 
-        .price-estimate { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; margin: 20px 0; }
-        .price-estimate h3 { color: var(--text-dark); font-size: 18px; }
-
-        .btn-order { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,82,255,0.3); }
-
-        /* Bottom Sheet Login (Sama) */
-        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; visibility: hidden; transition: 0.3s; }
-        .overlay.active { opacity: 1; visibility: visible; }
-        .login-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--white); z-index: 100; padding: 30px 20px; border-radius: 25px 25px 0 0; transform: translateY(100%); transition: transform 0.4s ease-in-out; }
-        .login-sheet.active { transform: translateY(0); }
-        .input-group { margin-bottom: 15px; }
-        .input-group input { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 14px; outline: none; }
-        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        /* Loader */
+        #loader { display: none; font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <div class="app-container">
+        
         <div class="top-bar">
             <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i></a>
-            <h2>Nganterin Ride 🏍️</h2>
         </div>
 
-        <div class="map-area"></div>
+        <div id="map"></div>
+        
+        <i class="fas fa-map-marker-alt center-marker" id="centerMarker"></i>
 
-        <div class="form-card">
-            <div class="location-input">
-                <i class="fas fa-dot-circle"></i>
-                <input type="text" placeholder="Lokasi Jemput (Cth: Alun-alun Boyolali)">
-            </div>
-            <div class="location-input dest">
-                <i class="fas fa-map-marker-alt"></i>
-                <input type="text" placeholder="Tujuan Antar (Cth: Simpang Lima)">
-            </div>
+        <div class="bottom-panel" id="bottomPanel">
+            <div class="sheet-handle"></div>
+            
+            <div id="loader"><i class="fas fa-spinner fa-spin"></i> Membaca lokasi peta...</div>
 
-            <div class="price-estimate">
-                <div>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 3px;">Estimasi Harga</p>
-                    <p style="font-size: 11px; color: var(--primary);"><i class="fas fa-wallet"></i> Bayar Tunai / NganterinPay</p>
+            <div class="address-box">
+                <i class="fas fa-dot-circle" style="color: var(--primary);" id="iconTitik"></i>
+                <div class="address-info">
+                    <p id="labelTitik">Geser peta untuk menentukan</p>
+                    <h4 id="teksLokasi">Titik Penjemputan</h4>
                 </div>
-                <h3>Rp 12.000</h3>
             </div>
 
-            <button class="btn-order" onclick="prosesPesanMotor()">Pesan Motor Sekarang</button>
-        </div>
+            <div class="fare-box" id="fareBox">
+                <div class="fare-info">
+                    <h3>Boyolali Ride</h3>
+                    <p id="teksJarak">Jarak: - km</p>
+                </div>
+                <div class="fare-price" id="teksHarga">Rp 0</div>
+            </div>
 
-        <!-- OVERLAY & BOTTOM SHEET LOGIN -->
-        <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
-        <div class="login-sheet" id="loginSheet">
-            <h2 style="color: #0052FF; margin-bottom: 5px;">Daftar / Masuk</h2>
-            <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Tinggalkan detailmu agar driver mudah menghubungi!</p>
-            <div class="input-group"><input type="text" id="regName" placeholder="Nama Panggilan"></div>
-            <div class="input-group"><input type="tel" id="regPhone" placeholder="Nomor WhatsApp"></div>
-            <button class="btn-primary" onclick="simpanData()">Lanjut & Cari Driver</button>
+            <button class="btn-action" id="btnMain" onclick="prosesLangkah()">Set Lokasi Jemput</button>
         </div>
     </div>
 
     <script>
-        function prosesPesanMotor() {
-            let user = localStorage.getItem("userName");
-            if(user) {
-                alert("Mencari Driver untuk " + user + "...\n(Nanti ini akan memicu Bot Telegram ke Grup Driver)");
-            } else {
-                document.getElementById("overlay").classList.add("active");
-                document.getElementById("loginSheet").classList.add("active");
+        // INISIALISASI PETA
+        // Koordinat default (Tugu Macan Boyolali) jika GPS mati
+        let map = L.map('map', {zoomControl: false}).setView([-7.5333, 110.6000], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // VARIABEL STATE LOKASI
+        let modePeta = "JEMPUT"; // State: JEMPUT -> TUJUAN -> PESAN
+        let titikJemput = null;
+        let titikTujuan = null;
+        let namaJemput = "";
+        let namaTujuan = "";
+
+        const elemenTeksLokasi = document.getElementById("teksLokasi");
+        const elemenLabelTitik = document.getElementById("labelTitik");
+        const elemenIconTitik = document.getElementById("iconTitik");
+        const btnMain = document.getElementById("btnMain");
+        const centerMarker = document.getElementById("centerMarker");
+        const fareBox = document.getElementById("fareBox");
+        let polyline; // Garis rute
+
+        // Deteksi Pergerakan Peta (Reverse Geocoding)
+        map.on('moveend', async function() {
+            if (modePeta === "PESAN") return; // Berhenti deteksi jika sudah ditarik garis
+
+            let center = map.getCenter();
+            document.getElementById("loader").style.display = "block";
+            elemenTeksLokasi.innerText = "Mencari alamat...";
+
+            try {
+                let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${center.lat}&lon=${center.lng}`);
+                let data = await response.json();
+                
+                let namaJalan = data.address.road || data.address.neighbourhood || data.address.suburb || data.address.village || "Lokasi pada peta";
+                elemenTeksLokasi.innerText = namaJalan;
+                
+                if (modePeta === "JEMPUT") {
+                    titikJemput = center;
+                    namaJemput = namaJalan;
+                } else if (modePeta === "TUJUAN") {
+                    titikTujuan = center;
+                    namaTujuan = namaJalan;
+                }
+            } catch(e) {
+                elemenTeksLokasi.innerText = "Lokasi Pilihan";
+            }
+            document.getElementById("loader").style.display = "none";
+        });
+
+        // Minta Lokasi Saat Ini (GPS) di awal
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                map.setView([position.coords.latitude, position.coords.longitude], 16);
+            });
+        }
+
+        // LOGIKA TOMBOL AKSI UTAMA
+        function prosesLangkah() {
+            if (modePeta === "JEMPUT") {
+                // Berubah ke mode pencarian tujuan
+                modePeta = "TUJUAN";
+                centerMarker.classList.add("is-dropoff");
+                elemenIconTitik.style.color = "#E53E3E";
+                elemenIconTitik.className = "fas fa-map-marker-alt";
+                elemenLabelTitik.innerText = "Geser peta untuk menentukan";
+                btnMain.innerText = "Set Tujuan Pengantaran";
+                btnMain.classList.add("dropoff-mode");
+                
+                // Geser peta sedikit agar animasi terlihat
+                map.panBy([0, -50]); 
+
+            } else if (modePeta === "TUJUAN") {
+                // Selesai milih titik, tampilkan harga
+                modePeta = "PESAN";
+                centerMarker.style.display = "none"; // Sembunyikan marker tengah
+                
+                // Gambar Garis Antara Dua Titik
+                let latlngs = [titikJemput, titikTujuan];
+                polyline = L.polyline(latlngs, {color: '#0F4C81', weight: 4, dashArray: '5, 10'}).addTo(map);
+                map.fitBounds(polyline.getBounds(), {padding: [50, 50]}); // Zoom otomatis agar kedua titik terlihat
+                
+                // Tambahkan Marker Statis
+                L.circleMarker(titikJemput, {color: '#0F4C81', fillOpacity: 1}).addTo(map);
+                L.marker(titikTujuan).addTo(map);
+
+                // Hitung Jarak dan Harga
+                let jarakMeter = titikJemput.distanceTo(titikTujuan);
+                let jarakKm = (jarakMeter / 1000).toFixed(1);
+                
+                let tarifDasar = 5000;
+                let tarifPerKm = 3000;
+                let totalHarga = tarifDasar + Math.round(jarakKm * tarifPerKm);
+                
+                document.getElementById("teksJarak").innerText = `Jarak: ${jarakKm} km`;
+                document.getElementById("teksHarga").innerText = `Rp ${totalHarga.toLocaleString('id-ID')}`;
+                
+                // Ubah UI Panel Bawah
+                fareBox.style.display = "flex";
+                elemenLabelTitik.innerText = "Titik Pengantaran:";
+                btnMain.innerText = "Pesan Transportasi Sekarang";
+                btnMain.style.background = "#0F4C81"; // Kembalikan ke warna biru
+            } else if (modePeta === "PESAN") {
+                // Pastikan user sudah login
+                if(!localStorage.getItem("userName")) {
+                    alert("Sistem mendeteksi Anda belum masuk akun. Silakan kembali ke Beranda/Profil untuk masuk.");
+                    return;
+                }
+                
+                let hargaFinal = document.getElementById("teksHarga").innerText;
+                alert(`Memproses Pesanan...\n\nJemput: ${namaJemput}\nTujuan: ${namaTujuan}\nTarif: ${hargaFinal}\n\n(Data ini siap dikirim ke Google Sheets melalui app.js Anda)`);
+                
+                // Anda bisa memanggil fungsi kirimPesanan() dari app.js di sini nantinya.
+                // window.location.href = "riwayat.html";
             }
         }
-        function tutupLogin() {
-            document.getElementById("overlay").classList.remove("active");
-            document.getElementById("loginSheet").classList.remove("active");
-        }
-        function simpanData() {
-            let nama = document.getElementById("regName").value;
-            let hp = document.getElementById("regPhone").value;
-            if(nama === "" || hp === "") { alert("Isi nama dan nomor WA dulu ya!"); return; }
-            localStorage.setItem("userName", nama);
-            localStorage.setItem("userPhone", hp);
-            tutupLogin();
-            alert("Berhasil masuk! Mencari driver terdekat...");
-        }
     </script>
-
-    ⁠<script src="app.js"></script>⁠
 </body>
 </html>
