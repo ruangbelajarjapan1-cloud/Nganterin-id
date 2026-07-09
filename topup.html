@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Up Saldo - Boyolali App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #0F4C81; --bg-gray: #F4F6F9; --white: #FFFFFF; --text-dark: #1A1A1A; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #E5E5E5; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--white); min-height: 100vh; position: relative;}
+        
+        .top-bar { padding: 20px; background: var(--primary); color: white; border-radius: 0 0 20px 20px;}
+        .top-bar a { color: white; font-size: 20px; text-decoration: none; margin-right: 15px;}
+        .top-bar h2 { font-size: 18px; display: inline-block; font-weight: 600;}
+        .saldo-info { margin-top: 20px; }
+        .saldo-info p { font-size: 13px; opacity: 0.8;}
+        .saldo-info h1 { font-size: 30px; font-weight: 700;}
+
+        .nominal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 30px 20px; }
+        .nominal-btn { border: 2px solid #E0E0E0; background: white; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; color: var(--text-dark); cursor: pointer; transition: 0.3s;}
+        .nominal-btn.active { border-color: var(--primary); background: #EBF4FA; color: var(--primary); }
+
+        .btn-pay { width: calc(100% - 40px); margin: 0 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(15, 76, 129, 0.3); position: absolute; bottom: 30px;}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="top-bar">
+            <a href="index.html"><i class="fas fa-arrow-left"></i></a>
+            <h2>Top Up Dompet</h2>
+            <div class="saldo-info">
+                <p>Saldo Saat Ini</p>
+                <h1>Rp 0</h1>
+            </div>
+        </div>
+
+        <h3 style="padding: 20px 20px 0 20px; font-size: 16px;">Pilih Nominal</h3>
+        <div class="nominal-grid" id="nominalContainer">
+            <button class="nominal-btn" onclick="pilihNominal(this, 20000)">Rp 20.000</button>
+            <button class="nominal-btn" onclick="pilihNominal(this, 50000)">Rp 50.000</button>
+            <button class="nominal-btn" onclick="pilihNominal(this, 100000)">Rp 100.000</button>
+            <button class="nominal-btn" onclick="pilihNominal(this, 200000)">Rp 200.000</button>
+        </div>
+
+        <button class="btn-pay" onclick="prosesBayar()">Lanjut Bayar</button>
+    </div>
+
+    <script>
+        let nominalDipilih = 0;
+        function pilihNominal(elemen, harga) {
+            document.querySelectorAll('.nominal-btn').forEach(btn => btn.classList.remove('active'));
+            elemen.classList.add('active');
+            nominalDipilih = harga;
+        }
+
+        function prosesBayar() {
+            if(nominalDipilih === 0) { alert("Pilih nominal top up terlebih dahulu!"); return; }
+            
+            // Memanggil API Midtrans (Simulasi)
+            alert("Membuka Gerbang Pembayaran (Midtrans)... \n\nSilakan scan QRIS atau transfer ke Virtual Account untuk nominal Rp " + nominalDipilih.toLocaleString('id-ID'));
+            
+            // Simulasi sukses
+            setTimeout(() => {
+                alert("Pembayaran Berhasil! Saldo telah ditambahkan.");
+                window.location.href = "index.html";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
