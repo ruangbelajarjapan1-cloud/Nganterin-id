@@ -1,4 +1,6 @@
-const CACHE_NAME = "nganterin-v2";
+// Naikkan versi setiap kali Anda mengubah HTML/CSS/JS agar memori lama terhapus
+const CACHE_NAME = "nganterin-v3"; 
+
 const urlsToCache = [
   "./",
   "./index.html",
@@ -7,8 +9,9 @@ const urlsToCache = [
   "./send.html",
   "./mart.html",
   "./driver.html",
-  "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  "./riwayat.html",
+  "./pesan.html",
+  "./profil.html"
 ];
 
 // Install Service Worker dan simpan file ke memori HP (Cache)
@@ -20,11 +23,31 @@ self.addEventListener("install", event => {
   );
 });
 
-// Gunakan file dari Cache jika internet lambat
+// AKTIVASI: Hapus cache versi lama agar aplikasi selalu mendapatkan update terbaru
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            console.log("Menghapus cache lama:", cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+});
+
+// FETCH: Gunakan file dari Cache, jika tidak ada, ambil dari internet.
+// Ditambah dengan fungsi .catch() agar tidak muncul error merah saat gagal muat ikon.
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+      return response || fetch(event.request).catch(() => {
+        console.log("Peringatan: Gagal memuat resource dari jaringan (Mungkin offline): ", event.request.url);
+        // Biarkan aplikasi tetap berjalan lancar meskipun 1 gambar gagal dimuat
+      });
     })
   );
 });
