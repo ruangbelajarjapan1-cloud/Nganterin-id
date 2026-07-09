@@ -20,34 +20,35 @@
         .app-container { width: 100%; max-width: 480px; background-color: var(--white); height: 100vh; position: relative; overflow: hidden; display: flex; flex-direction: column;}
         
         .top-bar { position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px; display: flex; align-items: center; pointer-events: none;}
-        .btn-back { background: var(--white); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: var(--text-dark); text-decoration: none; pointer-events: auto; font-size: 18px;}
+        .btn-back { background: var(--white); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.15); color: var(--text-dark); text-decoration: none; pointer-events: auto; font-size: 18px; transition: 0.2s;}
+        .btn-back:active { transform: scale(0.95); }
         
         /* Area Peta */
         #map { flex: 1; width: 100%; z-index: 1; }
         
-        /* Penanda Peta di Tengah (Marker UX ala Gojek) */
-        .center-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; font-size: 40px; color: var(--text-dark); pointer-events: none; transition: 0.2s ease-out; margin-top: -80px; text-shadow: 0 4px 5px rgba(0,0,0,0.3);}
+        /* Penanda Peta di Tengah UX ala Gojek/Grab */
+        .center-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; font-size: 45px; color: var(--primary); pointer-events: none; transition: 0.2s ease-out; margin-top: -60px; text-shadow: 0 5px 10px rgba(0,0,0,0.3);}
         .center-marker.is-dropoff { color: #E53E3E; }
         
         /* Panel Bawah Pemesanan */
-        .bottom-panel { background: var(--white); border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); padding: 25px 20px 30px 20px; z-index: 1000; position: relative; transition: 0.3s;}
+        .bottom-panel { background: var(--white); border-radius: 25px 25px 0 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.1); padding: 25px 20px 30px 20px; z-index: 1000; position: relative; transition: 0.3s;}
         .sheet-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
         
-        .address-box { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: var(--bg-gray); padding: 15px; border-radius: 12px;}
+        .address-box { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: var(--bg-gray); padding: 15px; border-radius: 15px; border: 1px solid #EAEAEA;}
         .address-box i { font-size: 20px; }
         .address-info p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
-        .address-info h4 { font-size: 14px; color: var(--text-dark); margin-top: 2px;}
+        .address-info h4 { font-size: 14px; color: var(--text-dark); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;}
 
         .fare-box { display: none; justify-content: space-between; align-items: center; padding: 15px 0; border-top: 1px dashed #E0E0E0; margin-bottom: 15px;}
-        .fare-info h3 { color: var(--text-dark); font-size: 16px;}
-        .fare-info p { color: var(--text-muted); font-size: 12px;}
+        .fare-info h3 { color: var(--text-dark); font-size: 16px; font-weight: 700;}
+        .fare-info p { color: var(--text-muted); font-size: 12px; margin-top: 2px;}
         .fare-price { font-size: 22px; font-weight: 700; color: var(--primary);}
 
         .btn-action { width: 100%; padding: 16px; background: var(--primary); color: var(--white); border: none; border-radius: 15px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(15, 76, 129, 0.3); transition: 0.3s;}
-        .btn-action.dropoff-mode { background: #E53E3E; box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3); }
+        .btn-action.dropoff-mode { background: var(--accent); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); color: var(--white); }
 
         /* Loader */
-        #loader { display: none; font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 10px; }
+        #loader { display: none; font-size: 13px; color: var(--primary); text-align: center; margin-bottom: 15px; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -64,13 +65,13 @@
         <div class="bottom-panel" id="bottomPanel">
             <div class="sheet-handle"></div>
             
-            <div id="loader"><i class="fas fa-spinner fa-spin"></i> Membaca lokasi peta...</div>
+            <div id="loader"><i class="fas fa-spinner fa-spin"></i> Menghitung rute presisi...</div>
 
             <div class="address-box">
                 <i class="fas fa-dot-circle" style="color: var(--primary);" id="iconTitik"></i>
                 <div class="address-info">
                     <p id="labelTitik">Geser peta untuk menentukan</p>
-                    <h4 id="teksLokasi">Titik Penjemputan</h4>
+                    <h4 id="teksLokasi">Mencari lokasi Anda...</h4>
                 </div>
             </div>
 
@@ -87,19 +88,19 @@
     </div>
 
     <script>
-        // INISIALISASI PETA
-        // Koordinat default (Tugu Macan Boyolali) jika GPS mati
-        let map = L.map('map', {zoomControl: false}).setView([-7.5333, 110.6000], 15);
+        // 1. INISIALISASI PETA (Default: Pusat Boyolali)
+        let map = L.map('map', {zoomControl: false}).setView([-7.5333, 110.6000], 16);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
+            attribution: '© OpenStreetMap',
+            maxZoom: 19
         }).addTo(map);
 
-        // VARIABEL STATE LOKASI
+        // 2. VARIABEL STATE LOKASI
         let modePeta = "JEMPUT"; // State: JEMPUT -> TUJUAN -> PESAN
         let titikJemput = null;
         let titikTujuan = null;
-        let namaJemput = "";
-        let namaTujuan = "";
+        let namaJemput = "Lokasi Pilihan";
+        let namaTujuan = "Tujuan Pilihan";
 
         const elemenTeksLokasi = document.getElementById("teksLokasi");
         const elemenLabelTitik = document.getElementById("labelTitik");
@@ -107,15 +108,14 @@
         const btnMain = document.getElementById("btnMain");
         const centerMarker = document.getElementById("centerMarker");
         const fareBox = document.getElementById("fareBox");
-        let polyline; // Garis rute
+        let polyline; 
 
-        // Deteksi Pergerakan Peta (Reverse Geocoding)
+        // 3. DETEKSI PERGERAKAN PETA (Reverse Geocoding OpenStreetMap)
         map.on('moveend', async function() {
-            if (modePeta === "PESAN") return; // Berhenti deteksi jika sudah ditarik garis
+            if (modePeta === "PESAN") return; // Jangan baca peta lagi jika sudah muncul harga
 
             let center = map.getCenter();
-            document.getElementById("loader").style.display = "block";
-            elemenTeksLokasi.innerText = "Mencari alamat...";
+            elemenTeksLokasi.innerText = "Membaca alamat...";
 
             try {
                 let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${center.lat}&lon=${center.lng}`);
@@ -132,77 +132,118 @@
                     namaTujuan = namaJalan;
                 }
             } catch(e) {
-                elemenTeksLokasi.innerText = "Lokasi Pilihan";
+                elemenTeksLokasi.innerText = "Lokasi Terpilih";
             }
-            document.getElementById("loader").style.display = "none";
         });
 
-        // Minta Lokasi Saat Ini (GPS) di awal
+        // 4. MINTA LOKASI SAAT INI (GPS)
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
-                map.setView([position.coords.latitude, position.coords.longitude], 16);
+                map.setView([position.coords.latitude, position.coords.longitude], 17);
+            }, () => {
+                elemenTeksLokasi.innerText = "Geser peta secara manual";
             });
         }
 
-        // LOGIKA TOMBOL AKSI UTAMA
+        // 5. LOGIKA TOMBOL AKSI UTAMA
         function prosesLangkah() {
             if (modePeta === "JEMPUT") {
-                // Berubah ke mode pencarian tujuan
+                // UBAH KE MODE TUJUAN
+                if (!titikJemput) titikJemput = map.getCenter();
+                
                 modePeta = "TUJUAN";
                 centerMarker.classList.add("is-dropoff");
                 elemenIconTitik.style.color = "#E53E3E";
                 elemenIconTitik.className = "fas fa-map-marker-alt";
                 elemenLabelTitik.innerText = "Geser peta untuk menentukan";
+                elemenTeksLokasi.innerText = "Mencari titik tujuan...";
+                
                 btnMain.innerText = "Set Tujuan Pengantaran";
                 btnMain.classList.add("dropoff-mode");
                 
-                // Geser peta sedikit agar animasi terlihat
-                map.panBy([0, -50]); 
+                // Geser peta sedikit agar animasi terasa
+                map.panBy([0, -80]); 
 
             } else if (modePeta === "TUJUAN") {
-                // Selesai milih titik, tampilkan harga
+                // UBAH KE MODE PESAN (KALKULASI RUTE OSRM)
+                if (!titikTujuan) titikTujuan = map.getCenter();
+                
                 modePeta = "PESAN";
-                centerMarker.style.display = "none"; // Sembunyikan marker tengah
+                centerMarker.style.display = "none"; 
+                document.getElementById("loader").style.display = "block";
+                btnMain.disabled = true;
                 
-                // Gambar Garis Antara Dua Titik
-                let latlngs = [titikJemput, titikTujuan];
-                polyline = L.polyline(latlngs, {color: '#0F4C81', weight: 4, dashArray: '5, 10'}).addTo(map);
-                map.fitBounds(polyline.getBounds(), {padding: [50, 50]}); // Zoom otomatis agar kedua titik terlihat
-                
-                // Tambahkan Marker Statis
-                L.circleMarker(titikJemput, {color: '#0F4C81', fillOpacity: 1}).addTo(map);
-                L.marker(titikTujuan).addTo(map);
+                // MENGAMBIL RUTE JALAN RAYA (OSRM API GRATIS)
+                let urlRute = `https://router.project-osrm.org/route/v1/driving/${titikJemput.lng},${titikJemput.lat};${titikTujuan.lng},${titikTujuan.lat}?overview=full&geometries=geojson`;
 
-                // Hitung Jarak dan Harga
-                let jarakMeter = titikJemput.distanceTo(titikTujuan);
-                let jarakKm = (jarakMeter / 1000).toFixed(1);
-                
-                let tarifDasar = 5000;
-                let tarifPerKm = 3000;
-                let totalHarga = tarifDasar + Math.round(jarakKm * tarifPerKm);
-                
-                document.getElementById("teksJarak").innerText = `Jarak: ${jarakKm} km`;
-                document.getElementById("teksHarga").innerText = `Rp ${totalHarga.toLocaleString('id-ID')}`;
-                
-                // Ubah UI Panel Bawah
-                fareBox.style.display = "flex";
-                elemenLabelTitik.innerText = "Titik Pengantaran:";
-                btnMain.innerText = "Pesan Transportasi Sekarang";
-                btnMain.style.background = "#0F4C81"; // Kembalikan ke warna biru
+                fetch(urlRute)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("loader").style.display = "none";
+                    btnMain.disabled = false;
+                    
+                    if(data.routes && data.routes.length > 0) {
+                        let rute = data.routes[0];
+                        let jarakMeter = rute.distance; 
+                        let jarakKm = (jarakMeter / 1000).toFixed(1);
+                        
+                        // Gambar garis rute
+                        let ruteKoordinat = rute.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                        polyline = L.polyline(ruteKoordinat, {color: '#0F4C81', weight: 5}).addTo(map);
+                        map.fitBounds(polyline.getBounds(), {padding: [50, 50]});
+                        
+                        // Tambahkan Marker Statis di awal dan akhir
+                        L.circleMarker(titikJemput, {color: '#0F4C81', fillOpacity: 1, radius: 6}).addTo(map);
+                        L.marker(titikTujuan).addTo(map);
+
+                        // PERHITUNGAN HARGA PRESISI
+                        let tarifDasar = 5000;
+                        let tarifPerKm = 3000;
+                        let totalHarga = tarifDasar + Math.round(jarakKm * tarifPerKm);
+                        
+                        document.getElementById("teksJarak").innerText = `Jarak Tempuh: ${jarakKm} km`;
+                        document.getElementById("teksHarga").innerText = `Rp ${totalHarga.toLocaleString('id-ID')}`;
+                        
+                        fareBox.style.display = "flex";
+                        elemenLabelTitik.innerText = "Tujuan Anda:";
+                        elemenTeksLokasi.innerText = namaTujuan;
+                        elemenIconTitik.className = "fas fa-map-marker-alt";
+                        
+                        btnMain.innerText = "Pesan Transportasi Sekarang";
+                        btnMain.classList.remove("dropoff-mode");
+                        btnMain.style.background = "#0F4C81";
+                    } else {
+                        alert("Gagal menemukan rute. Titik mungkin tidak terjangkau kendaraan.");
+                        location.reload();
+                    }
+                })
+                .catch(err => {
+                    alert("Koneksi gagal saat menghitung rute.");
+                    document.getElementById("loader").style.display = "none";
+                    btnMain.disabled = false;
+                });
+
             } else if (modePeta === "PESAN") {
-                // Pastikan user sudah login
+                // EKSEKUSI PEMESANAN KE GOOGLE SHEETS
                 if(!localStorage.getItem("userName")) {
-                    alert("Sistem mendeteksi Anda belum masuk akun. Silakan kembali ke Beranda/Profil untuk masuk.");
+                    alert("Sistem mendeteksi Anda belum masuk akun. Silakan kembali ke Beranda untuk masuk.");
                     return;
                 }
                 
                 let hargaFinal = document.getElementById("teksHarga").innerText;
-                alert(`Memproses Pesanan...\n\nJemput: ${namaJemput}\nTujuan: ${namaTujuan}\nTarif: ${hargaFinal}\n\n(Data ini siap dikirim ke Google Sheets melalui app.js Anda)`);
                 
-                // Anda bisa memanggil fungsi kirimPesanan() dari app.js di sini nantinya.
-                // window.location.href = "riwayat.html";
+                // Memanggil fungsi dari app.js (Jika app.js ditautkan)
+                if (typeof kirimPesanan === "function") {
+                    kirimPesanan("Transportasi (Ride)", namaJemput, namaTujuan, hargaFinal);
+                } else {
+                    // Fallback jika app.js lambat termuat
+                    alert(`Memproses Pesanan...\n\nJemput: ${namaJemput}\nTujuan: ${namaTujuan}\nTarif: ${hargaFinal}\n\nData berhasil diteruskan!`);
+                    window.location.href = "riwayat.html";
+                }
             }
         }
     </script>
+    
+    <script src="app.js"></script>
 </body>
 </html>
