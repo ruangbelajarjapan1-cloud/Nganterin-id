@@ -7,21 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-      /* TEMA WARNA BARU: Biru Elegan & Emas/Oranye */
-        :root {
-            --primary: #0F4C81;         /* Biru Premium / Navy */
-            --primary-dark: #0A365D;    /* Biru Gelap */
-            --primary-light: #EBF4FA;   /* Biru Sangat Muda (Latar Ikon) */
-            --accent: #F59E0B;          /* Emas / Oranye (Aksen Tombol/Bintang) */
-            --accent-dark: #D97706;     /* Emas Gelap */
-            --bg-gray: #F8F9FA;         /* Abu-abu Latar */
-            --text-dark: #2D3748;       /* Hitam Elegan */
-            --text-muted: #718096;      /* Abu-abu Teks */
-            --white: #FFFFFF;           /* Putih */
+        :root { 
+            --primary: #0F4C81; --primary-light: #EBF4FA; --accent: #F59E0B;
+            --bg-gray: #F8F9FA; --white: #FFFFFF; --text-dark: #2D3748; --text-muted: #718096;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
         body { background-color: #E5E5E5; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background-color: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 80px;}
+        .app-container { width: 100%; max-width: 480px; background-color: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 80px; overflow-x: hidden;}
         
         .top-bar { display: flex; align-items: center; padding: 20px; background: var(--white); }
         
@@ -29,76 +21,115 @@
         .profile-card { background: var(--white); padding: 30px 20px; text-align: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .avatar { width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; margin: 0 auto 15px auto; }
         .profile-card h2 { font-size: 20px; color: var(--text-dark); margin-bottom: 5px; font-weight: 600;}
-        .profile-card p { font-size: 13px; color: var(--text-muted); }
+        .profile-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px;}
+        
+        .btn-login-trigger { background: var(--accent); color: var(--white); border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; display: none; margin: 0 auto;}
 
         /* Menu Pilihan */
         .menu-list { padding: 20px; margin-top: 10px; }
         .menu-item { background: var(--white); padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; color: var(--text-dark); text-decoration: none; font-size: 14px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .menu-item i { color: var(--primary); font-size: 18px; width: 24px; text-align: center; }
         
-        .btn-logout { width: 100%; background: #E53E3E; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 20px; }
+        .btn-logout { width: 100%; background: #E53E3E; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 20px; display: none; }
 
-        /* Navigasi Bawah Selaras dengan Halaman Beranda */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white);
-            display: flex; justify-content: space-around; padding: 12px 0;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50;
-        }
+        /* Navigasi Bawah */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50; }
         .nav-item { color: #C4C4C4; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
         .nav-item i { font-size: 20px; }
         .nav-item span { font-size: 10px; font-weight: 500; }
         .nav-item.active { color: var(--primary); }
+
+        /* Bottom Sheet Login */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .overlay.active { opacity: 1; visibility: visible; }
+        .login-sheet { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); z-index: 100; padding: 30px 20px 40px 20px; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.4s ease; }
+        .login-sheet.active { transform: translateY(0); }
+        .login-sheet h2 { color: var(--text-dark); font-size: 22px; margin-bottom: 5px; }
+        .input-group { margin-bottom: 15px; margin-top: 20px; }
+        .input-group input { width: 100%; padding: 14px; border: 1px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; background: #FAFAFA; }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="top-bar">
-            <h2 style="font-size: 18px; margin: 0 auto; font-weight: 600; color: var(--text-dark);">Akun Saya</h2>
-        </div>
+        <div class="top-bar"><h2 style="font-size: 18px; margin: 0 auto; font-weight: 600; color: var(--text-dark);">Akun Saya</h2></div>
 
         <div class="profile-card">
             <div class="avatar"><i class="fas fa-user"></i></div>
             <h2 id="tampilNama">Belum Terdaftar</h2>
-            <p id="tampilWA">Selesaikan pengisian data di beranda</p>
+            <p id="tampilWA">Silakan masuk untuk mengakses fitur penuh</p>
+            <button class="btn-login-trigger" id="btnLoginSekarang" onclick="bukaLogin()">Masuk Akun</button>
         </div>
 
         <div class="menu-list">
             <a href="#" class="menu-item"><i class="fas fa-map-marker-alt"></i> Alamat Tersimpan</a>
             <a href="#" class="menu-item"><i class="fas fa-star"></i> Penilaian Anda</a>
             <a href="#" class="menu-item"><i class="fas fa-headset"></i> Bantuan & Laporan</a>
-            
-            <button class="btn-logout" onclick="keluarAkun()">Keluar Akun</button>
+            <button class="btn-logout" id="btnKeluar" onclick="keluarAkun()">Keluar Akun</button>
         </div>
 
-        <!-- Navigasi 4 Menu Sesuai Poster -->
         <nav class="bottom-nav">
             <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Beranda</span></a>
             <a href="#" class="nav-item"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
             <a href="#" class="nav-item"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
             <a href="profil.html" class="nav-item active"><i class="fas fa-user"></i><span>Akun</span></a>
         </nav>
+
+        <div class="overlay" id="overlay" onclick="tutupLogin()"></div>
+        <div class="login-sheet" id="loginSheet">
+            <div style="width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto;"></div>
+            <h2>Masuk Akun</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Masukkan data diri untuk melanjutkan.</p>
+            <div class="input-group"><input type="text" id="regName" placeholder="Nama Lengkap"></div>
+            <div class="input-group"><input type="tel" id="regPhone" placeholder="Nomor WhatsApp"></div>
+            <button class="btn-primary" onclick="prosesMasuk()">Masuk & Simpan</button>
+        </div>
     </div>
 
     <script>
-        window.onload = function() {
+        window.onload = function() { cekStatusLogin(); };
+
+        function cekStatusLogin() {
             let nama = localStorage.getItem("userName");
             let wa = localStorage.getItem("userPhone");
-
             if (nama && wa) {
                 document.getElementById("tampilNama").innerText = nama;
                 document.getElementById("tampilWA").innerText = wa;
+                document.getElementById("btnLoginSekarang").style.display = "none";
+                document.getElementById("btnKeluar").style.display = "block";
+            } else {
+                document.getElementById("tampilNama").innerText = "Belum Terdaftar";
+                document.getElementById("tampilWA").innerText = "Silakan masuk untuk mengakses fitur penuh";
+                document.getElementById("btnLoginSekarang").style.display = "block";
+                document.getElementById("btnKeluar").style.display = "none";
             }
-        };
+        }
+
+        function bukaLogin() { document.getElementById("overlay").classList.add("active"); document.getElementById("loginSheet").classList.add("active"); }
+        function tutupLogin() { document.getElementById("overlay").classList.remove("active"); document.getElementById("loginSheet").classList.remove("active"); }
+
+        function prosesMasuk() {
+            let nama = document.getElementById("regName").value;
+            let hp = document.getElementById("regPhone").value;
+            if (nama === "" || hp === "") { alert("Mohon lengkapi data Anda."); return; }
+            localStorage.setItem("userName", nama);
+            localStorage.setItem("userPhone", hp);
+            
+            // Panggil fungsi kirim ke server (jika app.js dipanggil di sini nantinya)
+            if(typeof kirimDataUserBaru === "function") { kirimDataUserBaru(nama, hp); }
+            
+            tutupLogin();
+            cekStatusLogin();
+        }
 
         function keluarAkun() {
-            let konfirmasi = confirm("Apakah Anda yakin ingin keluar dari akun?");
-            if (konfirmasi) {
+            if (confirm("Apakah Anda yakin ingin keluar?")) {
                 localStorage.removeItem("userName");
                 localStorage.removeItem("userPhone");
-                alert("Berhasil keluar.");
-                window.location.href = "index.html"; 
+                cekStatusLogin();
             }
         }
     </script>
+    <script src="app.js"></script>
 </body>
 </html>
