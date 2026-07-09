@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pesanan - Boyolali App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #0F4C81; --primary-light: #EBF4FA; --accent: #F59E0B;
+            --bg-gray: #F8F9FA; --white: #FFFFFF; --text-dark: #2D3748; --text-muted: #718096;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
+        body { background-color: #E5E5E5; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: var(--bg-gray); min-height: 100vh; position: relative; padding-bottom: 80px;}
+        
+        .top-bar { padding: 20px 20px 10px 20px; background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 10; }
+        .top-bar h2 { font-size: 22px; color: var(--text-dark); font-weight: 700; margin-bottom: 15px;}
+        
+        /* Tab Navigasi ala Gojek */
+        .tab-nav { display: flex; border-bottom: 2px solid #E0E0E0; }
+        .tab-btn { flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.3s; position: relative; }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--primary); border-radius: 2px 2px 0 0; }
+
+        .tab-content { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Kartu Riwayat */
+        .history-card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .history-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #E0E0E0; padding-bottom: 10px; margin-bottom: 10px; }
+        .history-header h4 { font-size: 14px; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+        .history-header h4 i { color: var(--primary); font-size: 16px; background: var(--primary-light); padding: 6px; border-radius: 8px; }
+        .badge { font-size: 11px; padding: 4px 8px; border-radius: 12px; font-weight: 600; }
+        .badge.proses { background: #FEF3C7; color: var(--accent-dark); }
+        .badge.selesai { background: #D1FAE5; color: #059669; }
+        
+        .history-body p { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 8px; }
+        .history-body p i { margin-top: 3px; color: #CBD5E1; }
+        .history-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .history-footer .price { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+        .btn-action { background: var(--primary-light); color: var(--primary); border: none; padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        /* Navigasi Bawah */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 50; }
+        .nav-item { color: #C4C4C4; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
+        .nav-item i { font-size: 20px; }
+        .nav-item span { font-size: 10px; font-weight: 500; }
+        .nav-item.active { color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="top-bar">
+            <h2>Riwayat Pesanan</h2>
+            <div class="tab-nav">
+                <div class="tab-btn active" onclick="bukaTab('proses', this)">Sedang Berjalan</div>
+                <div class="tab-btn" onclick="bukaTab('selesai', this)">Selesai</div>
+            </div>
+        </div>
+
+        <div id="proses" class="tab-content active">
+            <div class="history-card">
+                <div class="history-header">
+                    <h4><i class="fas fa-utensils"></i> Makanan</h4>
+                    <span class="badge proses">Diantar</span>
+                </div>
+                <div class="history-body">
+                    <p><i class="fas fa-store"></i> Sate Sapi Pak Manto</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Jl. Merdeka No. 10 (Kantor Bupati)</p>
+                </div>
+                <div class="history-footer">
+                    <span class="price">Rp 60.000</span>
+                    <button class="btn-action" style="background: var(--accent); color: white;">Lacak Driver</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="selesai" class="tab-content">
+            <div class="history-card">
+                <div class="history-header">
+                    <h4><i class="fas fa-motorcycle"></i> Transportasi</h4>
+                    <span class="badge selesai">Selesai</span>
+                </div>
+                <div class="history-body">
+                    <p><i class="fas fa-dot-circle" style="color: var(--primary);"></i> Alun-alun Boyolali</p>
+                    <p><i class="fas fa-map-marker-alt" style="color: #E53E3E;"></i> Terminal Lama</p>
+                </div>
+                <div class="history-footer">
+                    <span class="price">Rp 12.000</span>
+                    <button class="btn-action" onclick="window.location.href='receipt.html'">Lihat Resi</button>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Beranda</span></a>
+            <a href="riwayat.html" class="nav-item active"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
+            <a href="pesan.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
+            <a href="profil.html" class="nav-item"><i class="fas fa-user"></i><span>Akun</span></a>
+        </nav>
+    </div>
+
+    <script>
+        function bukaTab(idTab, elemen) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(idTab).classList.add('active');
+            elemen.classList.add('active');
+        }
+    </script>
+</body>
+</html>
