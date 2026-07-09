@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
     <style>
         /* TEMA WARNA BARU: Biru Elegan & Emas/Oranye */
@@ -112,8 +113,8 @@
         .sheet-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
         
         .input-group { margin-bottom: 15px; }
-        .input-group input { width: 100%; padding: 14px; border: 1px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.3s; background: #FAFAFA; }
-        .input-group input:focus { border-color: var(--primary); background: var(--white); }
+        .input-group input, .input-group textarea { width: 100%; padding: 14px; border: 1px solid #E0E0E0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.3s; background: #FAFAFA; font-family: 'Poppins', sans-serif;}
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--primary); background: var(--white); }
         .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
         .btn-secondary { width: 100%; padding: 15px; background: transparent; color: var(--text-muted); border: none; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 5px; }
     </style>
@@ -122,7 +123,6 @@
 
     <div class="app-container">
 
-        <!-- SPLASH SCREEN ANIMASI -->
         <div id="splash-screen">
             <div class="splash-logo"><i class="fas fa-wallet"></i></div>
             <h2 style="font-weight: 700; font-size: 28px; letter-spacing: 1px;">Boyolali App</h2>
@@ -130,7 +130,6 @@
         </div>
         
         <div class="home-screen">
-            <!-- HEADER LOKASI -->
             <div class="main-header">
                 <p id="greetingSub" style="font-size: 11px; opacity: 0.9; margin-bottom: 2px;"><i class="fas fa-map-marker-alt"></i> Lokasi Saat Ini</p>
                 <h3 id="greetingName" style="font-size: 15px; font-weight: 600;">Area Boyolali <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></h3>
@@ -141,7 +140,6 @@
                 </div>
             </div>
 
-            <!-- KARTU SALDO -->
             <div class="wallet-card">
                 <div class="wallet-info">
                     <p>Saldo BoyolaliPay</p>
@@ -150,7 +148,6 @@
                <a href="topup.html" class="top-up-btn" style="text-decoration: none;">Top Up <i class="fas fa-plus-circle" style="margin-left: 4px;"></i></a>
             </div>
 
-            <!-- MENU UTAMA 8 IKON (FULL TERTANAM LINK-NYA) -->
             <div class="menu-grid">
                 <a href="ride.html" class="menu-item">
                     <div class="menu-icon"><i class="fas fa-motorcycle"></i></div>Transportasi
@@ -178,7 +175,6 @@
                 </a>
             </div>
 
-            <!-- KAMPANYE UMKM LOKAL -->
             <div class="section-title">Dukung Ekosistem Lokal</div>
             <div class="promo-scroll">
                 <div class="promo-card">
@@ -192,7 +188,6 @@
                 </div>
             </div>
             
-            <!-- NAVIGASI TESTING DEVELOPER (Bisa dihapus saat rilis) -->
             <div style="text-align: center; margin-top: 30px; margin-bottom: 20px; padding: 20px;">
                 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                     <a href="admin.html" style="font-size: 11px; background: var(--text-dark); color: white; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-weight: 600;"><i class="fas fa-laptop"></i> Dasbor Admin</a>
@@ -203,36 +198,36 @@
 
         </div>
 
-        <!-- NAVIGASI BAWAH -->
-       <nav class="bottom-nav">
-            <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Beranda</span></a>
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active"><i class="fas fa-home"></i><span>Beranda</span></a>
             <a href="riwayat.html" class="nav-item"><i class="fas fa-receipt"></i><span>Riwayat</span></a>
             <a href="pesan.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
             <a href="profil.html" class="nav-item"><i class="fas fa-user"></i><span>Akun</span></a>
         </nav>
 
-        <!-- OVERLAY UMUM -->
         <div class="overlay" id="overlay" onclick="tutupSemuaModal()"></div>
 
-    <div class="bottom-sheet" id="loginSheet" style="max-height: 85vh; overflow-y: auto;">
-    <div class="sheet-handle"></div>
-    <div style="text-align: center; padding: 10px;">
-        <i class="fas fa-motorcycle" style="font-size: 50px; color: var(--primary);"></i>
-        <h2 style="margin: 15px 0;">Selamat Datang di Boyolali</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
-            Satu aplikasi untuk segala kebutuhan kuliner, transportasi, dan layanan lokal Anda.
-        </p>
-    </div>
-    
-    <div class="input-group"><input type="text" id="regName" placeholder="Nama Lengkap Anda"></div>
-    <div class="input-group"><input type="tel" id="regPhone" placeholder="Nomor WhatsApp"></div>
-    
-    <button class="btn-primary" onclick="prosesDaftar()">Lanjutkan Verifikasi</button>
-    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 15px;">
-        Dengan menekan tombol di atas, Anda menyetujui Ketentuan Layanan kami.
-    </p>
-</div>
-        <!-- BOTTOM SHEET: INSTALL PWA -->
+        <div class="bottom-sheet" id="loginSheet" style="max-height: 85vh; overflow-y: auto;">
+            <div class="sheet-handle"></div>
+            <div style="text-align: center; padding: 10px;">
+                <i class="fas fa-motorcycle" style="font-size: 50px; color: var(--primary);"></i>
+                <h2 style="margin: 15px 0; color: var(--text-dark);">Selamat Datang</h2>
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
+                    Satu aplikasi untuk segala kebutuhan ekosistem lokal Anda.
+                </p>
+            </div>
+            
+            <div class="input-group"><input type="text" id="regName" placeholder="Nama Lengkap"></div>
+            <div class="input-group"><input type="tel" id="regPhone" placeholder="Nomor WhatsApp Aktif"></div>
+            <div class="input-group"><input type="email" id="regEmail" placeholder="Alamat Email (Opsional)"></div>
+            <div class="input-group"><textarea id="regAlamat" placeholder="Alamat Lengkap (Jalan, RT/RW)" rows="2"></textarea></div>
+            
+            <button class="btn-primary" onclick="prosesDaftar()">Lanjutkan Verifikasi</button>
+            <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 15px;">
+                Dengan menekan tombol di atas, Anda menyetujui Ketentuan Layanan.
+            </p>
+        </div>
+
         <div class="bottom-sheet" id="installModal" style="z-index: 1000;">
             <div class="sheet-handle"></div>
             <div style="text-align: center; margin-bottom: 20px;">
@@ -252,11 +247,20 @@
             setTimeout(() => { document.getElementById('splash-screen').classList.add('hidden'); }, 1500);
         });
 
-        // CEK LOGIN PENGGUNA
+        // CEK LOGIN PENGGUNA DAN SAPAAN OTOMATIS
         window.onload = function() {
             let namaUser = localStorage.getItem("userName");
+            
             if (namaUser) {
-                document.getElementById("greetingName").innerHTML = namaUser + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
+                // Sapaan Berdasarkan Waktu
+                let jam = new Date().getHours();
+                let sapaan = "Selamat Malam";
+                if(jam >= 4 && jam < 11) sapaan = "Selamat Pagi";
+                else if(jam >= 11 && jam < 15) sapaan = "Selamat Siang";
+                else if(jam >= 15 && jam < 18) sapaan = "Selamat Sore";
+                
+                document.getElementById("greetingSub").innerHTML = `<i class="fas fa-sun"></i> ${sapaan},`;
+                document.getElementById("greetingName").innerHTML = namaUser + " 👋";
             } else {
                 setTimeout(() => {
                     document.getElementById("overlay").classList.add("active");
@@ -265,24 +269,18 @@
             }
         };
 
-        // FUNGSI MENUTUP SEMUA MODAL/POP-UP
         function tutupSemuaModal() {
             document.getElementById("overlay").classList.remove("active");
             document.getElementById("loginSheet").classList.remove("active");
             document.getElementById("installModal").classList.remove("active");
         }
 
-        // FUNGSI DAFTAR / LOGIN
-      // LOGIKA LOGIN DENGAN SIMULASI OTP WHATSAPP
-        let dataSementara = {};
-
-     // LOGIKA LOGIN DENGAN DATA LENGKAP & SIMULASI OTP
+        // LOGIKA PENDAFTARAN & OTP
         let dataSementara = {};
 
         function prosesDaftar() {
             let nama = document.getElementById("regName").value;
             let hp = document.getElementById("regPhone").value;
-            // Tambahan input yang baru ditambahkan (lihat kode HTML di bawah)
             let email = document.getElementById("regEmail") ? document.getElementById("regEmail").value : "";
             let alamat = document.getElementById("regAlamat") ? document.getElementById("regAlamat").value : "";
 
@@ -291,10 +289,8 @@
                 return;
             }
 
-            // Simpan data lengkap sementara
             dataSementara = { nama: nama, hp: hp, email: email, alamat: alamat };
 
-            // Ubah Tampilan Bottom Sheet menjadi Form OTP
             let loginSheet = document.getElementById("loginSheet");
             loginSheet.innerHTML = `
                 <div class="sheet-handle"></div>
@@ -316,41 +312,33 @@
         }
 
         function verifikasiOTP() {
-            // Pindahkan data sementara ke penyimpanan permanen HP (localStorage)
             localStorage.setItem("userName", dataSementara.nama);
             localStorage.setItem("userPhone", dataSementara.hp);
             localStorage.setItem("userEmail", dataSementara.email);
             localStorage.setItem("userAlamat", dataSementara.alamat);
             
-            // Kirim hanya nama & WA ke app.js agar struktur backend Anda sebelumnya tidak rusak
             if(typeof kirimDataUserBaru === "function") { kirimDataUserBaru(dataSementara.nama, dataSementara.hp); }
             
             tutupSemuaModal();
+            
+            let jam = new Date().getHours();
+            let sapaan = "Selamat Malam";
+            if(jam >= 4 && jam < 11) sapaan = "Selamat Pagi";
+            else if(jam >= 11 && jam < 15) sapaan = "Selamat Siang";
+            else if(jam >= 15 && jam < 18) sapaan = "Selamat Sore";
+                
+            document.getElementById("greetingSub").innerHTML = `<i class="fas fa-sun"></i> ${sapaan},`;
             document.getElementById("greetingName").innerHTML = dataSementara.nama + " 👋";
+            
             alert("Verifikasi Berhasil! Akun Anda telah aman.");
         }
 
-        function verifikasiOTP() {
-            // Simulasi: Berapa pun angka yang dimasukkan, dianggap benar untuk keperluan Demo
-            let nama = dataSementara.nama;
-            let hp = dataSementara.hp;
-
-            localStorage.setItem("userName", nama);
-            localStorage.setItem("userPhone", hp);
-            
-            if(typeof kirimDataUserBaru === "function") { kirimDataUserBaru(nama, hp); }
-            
-            tutupSemuaModal(); // <--- NAMA FUNGSI SUDAH DIPERBAIKI
-            document.getElementById("greetingName").innerHTML = nama + " 👋";
-            alert("Verifikasi Berhasil! Akun Anda telah aman.");
-        }
         // LOGIKA PEMICU INSTALL PWA
         let deferredPromptUtama;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPromptUtama = e;
             
-            // Munculkan Pop-up Instalasi 4 detik setelah layar dimuat (jika pengguna sudah login)
             if(localStorage.getItem("userName")) {
                 setTimeout(() => {
                     document.getElementById('overlay').classList.add('active');
@@ -367,41 +355,28 @@
                 deferredPromptUtama = null;
             }
         });
-        // ==========================================
-// FUNGSI LOKASI REAL-TIME (GEOLOCATION)
-// ==========================================
-function dapatkanLokasi() {
-    const teksLokasi = document.getElementById("greetingName");
-    
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async function(position) {
-            let lat = position.coords.latitude;
-            let lon = position.coords.longitude;
-            
-            try {
-                // Mengubah koordinat menjadi nama kota/kecamatan menggunakan API Gratis
-                let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                let data = await response.json();
-                
-                // Mengambil nama kota, kabupaten, atau kecamatan
-                let namaArea = data.address.city || data.address.county || data.address.town || data.address.village || "Lokasi Ditemukan";
-                
-                teksLokasi.innerHTML = namaArea + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
-                
-                // Simpan lokasi ke memori agar layanan lain tahu titik jemput default
-                localStorage.setItem("userLokasi", namaArea);
-                
-            } catch (error) {
-                console.log("Gagal membaca nama area: ", error);
-            }
-        }, function(error) {
-            console.log("Izin lokasi ditolak pengguna.");
-        });
-    }
-}
 
-// Panggil fungsi lokasi saat halaman beranda dimuat
-window.addEventListener('load', dapatkanLokasi);
+        // FUNGSI LOKASI REAL-TIME (GEOLOCATION)
+        function dapatkanLokasi() {
+            if (navigator.geolocation && !localStorage.getItem("userLokasi")) {
+                navigator.geolocation.getCurrentPosition(async function(position) {
+                    let lat = position.coords.latitude;
+                    let lon = position.coords.longitude;
+                    
+                    try {
+                        let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                        let data = await response.json();
+                        let namaArea = data.address.city || data.address.county || data.address.town || data.address.village || "Lokasi Ditemukan";
+                        localStorage.setItem("userLokasi", namaArea);
+                    } catch (error) {
+                        console.log("Gagal membaca nama area: ", error);
+                    }
+                }, function(error) {
+                    console.log("Izin lokasi ditolak pengguna.");
+                });
+            }
+        }
+        window.addEventListener('load', dapatkanLokasi);
     </script>
     
     <script>
@@ -411,8 +386,6 @@ window.addEventListener('load', dapatkanLokasi);
         }
     </script>
     
-    <!-- PENTING: Memanggil app.js tanpa mengubah isi aslinya -->
     <script src="app.js"></script>
-    
 </body>
 </html>
