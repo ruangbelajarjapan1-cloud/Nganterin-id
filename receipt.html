@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resi Perjalanan - Nganterin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* TEMA WARNA: Biru Navy & Emas */
+        :root {
+            --primary: #0F4C81;
+            --text-dark: #1A1A1A;
+            --text-gray: #666666;
+            --border-light: #EAEAEA;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background-color: #F4F6F9; 
+            font-family: 'Poppins', sans-serif;
+            display: flex; 
+            justify-content: center; 
+            padding: 40px 20px;
+        }
+
+        /* Pembatas Kertas Resi (Elegan & Presisi) */
+        .receipt-container {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 400px; /* Ukuran pas untuk layar dan proporsional di A4 */
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            border-top: 6px solid var(--primary);
+            position: relative;
+        }
+
+        /* Tipografi Elegan */
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 1px dashed var(--border-light); padding-bottom: 20px; }
+        .header h1 { font-size: 22px; color: var(--text-dark); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .header p { font-size: 12px; color: var(--text-gray); }
+
+        .trip-details { margin-bottom: 20px; }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; }
+        .detail-label { color: var(--text-gray); }
+        .detail-value { font-weight: 600; color: var(--text-dark); text-align: right; }
+
+        .location-box { background: #FAFAFA; border-radius: 8px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border-light); }
+        .loc-item { position: relative; padding-left: 20px; margin-bottom: 15px; font-size: 13px; }
+        .loc-item:last-child { margin-bottom: 0; }
+        .loc-item::before { content: ''; position: absolute; left: 0; top: 4px; width: 10px; height: 10px; border-radius: 50%; }
+        .loc-pickup::before { background: var(--primary); }
+        .loc-dropoff::before { background: #F59E0B; } /* Warna Emas untuk tujuan */
+        .loc-label { font-size: 11px; color: var(--text-gray); display: block; margin-bottom: 2px; }
+
+        .fare-breakdown { border-top: 1px dashed var(--border-light); border-bottom: 1px dashed var(--border-light); padding: 15px 0; margin-bottom: 20px; }
+        .total-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .total-label { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+        .total-amount { font-size: 20px; font-weight: 700; color: var(--primary); }
+
+        .footer { text-align: center; font-size: 11px; color: var(--text-gray); margin-top: 20px; }
+        
+        .btn-print { 
+            display: block; width: 100%; padding: 12px; margin-top: 25px; 
+            background: var(--text-dark); color: white; border: none; border-radius: 8px; 
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .btn-print:hover { background: #333; }
+        
+        .btn-back {
+            display: block; width: 100%; padding: 12px; margin-top: 10px; 
+            background: transparent; color: var(--text-gray); border: 1px solid var(--border-light); border-radius: 8px; 
+            font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; transition: 0.3s;
+        }
+
+        /* MENGATUR PENCETAKAN SUPAYA ELEGAN DAN FIT DI KERTAS A4 MAUPUN THERMAL */
+        @media print {
+            body { background: white; padding: 0; align-items: flex-start; }
+            .receipt-container { 
+                box-shadow: none; border-radius: 0; max-width: 100%; width: 100%; 
+                border-top: none; padding: 15px; margin: 0 auto;
+            }
+            /* Sembunyikan tombol saat kertas dicetak */
+            .btn-print, .btn-back { display: none; } 
+            
+            /* Pembatasan lebar spesifik agar tidak melebar jelek di A4 */
+            @page { margin: 1cm; size: auto; }
+            .receipt-container { max-width: 8cm; margin: 0 auto; }
+            
+            /* Menggunakan font jenis kasir/mesin ketik untuk kesan resmi saat dicetak */
+            .detail-row, .loc-item, .footer { font-family: 'Courier Prime', monospace; font-size: 11pt; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="receipt-container">
+        <div class="header">
+            <h1>Nganterin Ride</h1>
+            <p>Bukti Pembayaran Digital</p>
+        </div>
+
+        <div class="trip-details">
+            <div class="detail-row">
+                <span class="detail-label">No. Resi</span>
+                <span class="detail-value">#BYL-9028471</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Tanggal</span>
+                <span class="detail-value">Hari Ini</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Nama Pengemudi</span>
+                <span class="detail-value">Agus Setiawan</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Kendaraan</span>
+                <span class="detail-value">Honda Vario (AD 1234 XX)</span>
+            </div>
+        </div>
+
+        <div class="location-box">
+            <div class="loc-item loc-pickup">
+                <span class="loc-label">Lokasi Jemput</span>
+                <strong>Alun-Alun Boyolali</strong>
+            </div>
+            <div class="loc-item loc-dropoff">
+                <span class="loc-label">Lokasi Tujuan</span>
+                <strong>Terminal Baru</strong>
+            </div>
+        </div>
+
+        <div class="fare-breakdown">
+            <div class="detail-row">
+                <span class="detail-label">Tarif Dasar</span>
+                <span class="detail-value">Rp 10.000</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Biaya Jasa Aplikasi</span>
+                <span class="detail-value">Rp 2.000</span>
+            </div>
+            <div class="total-row">
+                <span class="total-label">Total Dibayar</span>
+                <span class="total-amount">Rp 12.000</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Pembayaran diselesaikan secara tunai.</p>
+            <p style="margin-top: 5px;">Terima kasih telah memberdayakan ekosistem lokal!</p>
+        </div>
+
+        <button class="btn-print" onclick="window.print()">Cetak Resi PDF</button>
+        
+        <a href="riwayat.html" class="btn-back">Kembali ke Riwayat</a>
+    </div>
+
+</body>
+</html>
