@@ -54,18 +54,22 @@
         </div>
 
         <div class="store-selector">
-            <select>
-                <option value="pasar">Belanja di Pasar Tradisional</option>
-                <option value="minimarket">Belanja di Minimarket Terdekat</option>
-                <option value="toko_kelontong">Belanja di Toko Kelontong</option>
-                <option value="lainnya">Toko Lainnya (Tulis di Catatan)</option>
+            <select id="jenisToko">
+                <option value="Pasar Tradisional">Belanja di Pasar Tradisional</option>
+                <option value="Minimarket">Belanja di Minimarket Terdekat</option>
+                <option value="Toko Kelontong">Belanja di Toko Kelontong</option>
+                <option value="Toko Lainnya">Toko Lainnya (Tulis di Catatan)</option>
             </select>
         </div>
 
         <div class="shopping-list">
             <h3>Catatan Belanjaan</h3>
-            <textarea placeholder="Contoh:&#10;1. Beras Lokal 5Kg (1 karung)&#10;2. Telur ayam (1/2 Kg)&#10;3. Gula Pasir (1 Kg)&#10;&#10;Tuliskan sedetail mungkin untuk memudahkan mitra pengemudi."></textarea>
-            
+            <textarea id="catatanBelanja" placeholder="Contoh:&#10;1. Beras Lokal 5Kg (1 karung)&#10;2. Telur ayam (1/2 Kg)&#10;3. Gula Pasir (1 Kg)&#10;&#10;Tuliskan sedetail mungkin untuk memudahkan mitra pengemudi."></textarea>
+
+            <div class="input-box" style="margin-top: 15px;">
+                <input type="number" id="estimasiBudget" placeholder="Perkiraan total belanja (Rp), misal: 100000">
+            </div>
+
             <div class="info-box">
                 <i class="fas fa-info-circle" style="font-size: 20px; margin-top: 2px;"></i>
                 <p>Mitra pengemudi akan menalangi (membayar) belanjaan Anda terlebih dahulu maksimal Rp 200.000. Mohon siapkan uang pas saat pesanan tiba.</p>
@@ -86,39 +90,47 @@
 
     <script>
         function prosesBelanja() {
-            if(localStorage.getItem("userName")) { alert("Mencari mitra pengemudi terdekat untuk daftar belanja Anda..."); } 
-            else { document.getElementById("overlay").classList.add("active"); document.getElementById("loginSheet").classList.add("active"); }
+            let catatan = document.getElementById("catatanBelanja").value.trim();
+            if (catatan === "") {
+                alert("Mohon isi catatan belanjaan terlebih dahulu.");
+                return;
+            }
+            if (localStorage.getItem("userName")) {
+                kirimPesananBelanja();
+            } else {
+                document.getElementById("overlay").classList.add("active");
+                document.getElementById("loginSheet").classList.add("active");
+            }
         }
+
+        function kirimPesananBelanja() {
+            let jenisToko = document.getElementById("jenisToko").value;
+            let catatan = document.getElementById("catatanBelanja").value.trim();
+            let budget = document.getElementById("estimasiBudget").value;
+            let hargaTeks = budget ? "Rp " + parseInt(budget).toLocaleString('id-ID') + " (Estimasi)" : "Estimasi menyusul";
+
+            kirimPesanan(
+                "Belanja (Titip Beli) - Tunai",
+                jenisToko,
+                catatan,
+                hargaTeks
+            );
+        }
+
         function tutupLogin() { document.getElementById("overlay").classList.remove("active"); document.getElementById("loginSheet").classList.remove("active"); }
+
         function simpanData() {
             let nama = document.getElementById("regName").value, hp = document.getElementById("regPhone").value;
-            if(nama && hp) { localStorage.setItem("userName", nama); localStorage.setItem("userPhone", hp); tutupLogin(); alert("Berhasil! Meneruskan pesanan Anda..."); }
-            else { alert("Mohon lengkapi data Anda terlebih dahulu."); }
+            if(nama && hp) {
+                localStorage.setItem("userName", nama);
+                localStorage.setItem("userPhone", hp);
+                kirimDataUserBaru(nama, hp, "", "");
+                tutupLogin();
+                kirimPesananBelanja();
+            } else {
+                alert("Mohon lengkapi data Anda terlebih dahulu.");
+            }
         }
-        function prosesDaftar() {
-    let nama = document.getElementById("regName").value;
-    let hp = document.getElementById("regPhone").value;
-    
-    if (nama === "" || hp === "") { 
-        alert("Mohon lengkapi nama dan nomor WhatsApp."); 
-        return; 
-    }
-    
-    // 1. Simpan di memori HP
-    localStorage.setItem("userName", nama);
-    localStorage.setItem("userPhone", hp);
-    
-    // 2. KIRIM DATA KE GOOGLE SHEETS (Memanggil fungsi baru di app.js)
-    kirimDataUserBaru(nama, hp);
-    
-    tutupLogin();
-    
-    // Perbarui teks nama di beranda
-    let elemenNama = document.getElementById("greetingName");
-    if(elemenNama) {
-        elemenNama.innerHTML = nama + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
-    }
-}
     </script>
 
     <script src="app.js"></script>
