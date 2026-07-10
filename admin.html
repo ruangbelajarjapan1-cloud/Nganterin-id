@@ -135,7 +135,31 @@
             </table>
         </div>
     </div>
-    
+    <script>
+        // Logika Sederhana untuk Klik Menu Sidebar
+        document.addEventListener("DOMContentLoaded", function() {
+            const menuLinks = document.querySelectorAll(".nav-link");
+            
+            menuLinks.forEach(link => {
+                link.addEventListener("click", function(e) {
+                    // Abaikan jika tombol yang diklik adalah tombol "Keluar"
+                    if(this.innerText.includes("Keluar")) return; 
+                    
+                    e.preventDefault(); // Mencegah halaman melompat
+                    
+                    // Hapus class 'active' dari semua menu
+                    menuLinks.forEach(l => l.classList.remove("active"));
+                    
+                    // Tambahkan class 'active' ke menu yang diklik
+                    this.classList.add("active");
+                    
+                    // Simulasi pemuatan data
+                    let namaMenu = this.innerText.trim();
+                    alert("Sedang memuat data untuk menu: " + namaMenu + "...\n\n(Ini akan terhubung ke Google Sheets di tahap selanjutnya)");
+                });
+            });
+        });
+    </script>
     <script src="app.js"></script>
 </body>
 </html>
