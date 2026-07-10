@@ -274,9 +274,7 @@
             document.getElementById("installModal").classList.remove("active");
         }
 
-        // LOGIKA PENDAFTARAN & OTP
-        let dataSementara = {};
-
+        // LOGIKA PENDAFTARAN FINAL (LANGSUNG KE DATABASE)
         function prosesDaftar() {
             let nama = document.getElementById("regName").value;
             let hp = document.getElementById("regPhone").value;
@@ -288,50 +286,43 @@
                 return;
             }
 
-            dataSementara = { nama: nama, hp: hp, email: email, alamat: alamat };
+            // 1. Ubah tombol menjadi status memproses agar tidak diklik dua kali
+            let btn = document.activeElement;
+            let teksAsli = btn.innerText;
+            btn.innerText = "Menyimpan Data...";
+            btn.disabled = true;
 
-            let loginSheet = document.getElementById("loginSheet");
-            loginSheet.innerHTML = `
-                <div class="sheet-handle"></div>
-                <h2 style="color: var(--primary); font-size: 24px; margin-bottom: 5px;">Verifikasi WA</h2>
-                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Kami mengirimkan 4 digit OTP ke <strong>${hp}</strong>.</p>
+            // 2. Simpan data secara permanen ke memori HP
+            localStorage.setItem("userName", nama);
+            localStorage.setItem("userPhone", hp);
+            localStorage.setItem("userEmail", email);
+            localStorage.setItem("userAlamat", alamat);
+
+            // 3. TEMBAKKAN DATA KE GOOGLE SHEETS VIA app.js
+            if(typeof kirimDataUserBaru === "function") { 
+                kirimDataUserBaru(nama, hp); 
+            }
+
+            // 4. Tutup Form dan Update Antarmuka Beranda
+            setTimeout(() => {
+                tutupSemuaModal();
                 
-                <div style="display: flex; gap: 15px; margin-bottom: 20px; justify-content: center;">
-                    <input type="text" id="otp1" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
-                    <input type="text" id="otp2" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
-                    <input type="text" id="otp3" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
-                    <input type="text" id="otp4" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 24px; border-radius: 12px; border: 1px solid #0052FF; outline: none; font-weight: bold;">
-                </div>
+                let jam = new Date().getHours();
+                let sapaan = "Selamat Malam";
+                if(jam >= 4 && jam < 11) sapaan = "Selamat Pagi";
+                else if(jam >= 11 && jam < 15) sapaan = "Selamat Siang";
+                else if(jam >= 15 && jam < 18) sapaan = "Selamat Sore";
+                    
+                document.getElementById("greetingSub").innerHTML = `<i class="fas fa-sun"></i> ${sapaan},`;
+                document.getElementById("greetingName").innerHTML = nama + " 👋";
                 
-                <button class="btn-primary" onclick="verifikasiOTP()">Verifikasi & Masuk</button>
-            `;
-            
-            if(document.getElementById("otp1")) document.getElementById("otp1").focus();
-            alert("Simulasi: Anggap saja ada pesan masuk ke WA berisi kode OTP.");
+                alert("Pendaftaran Berhasil! Data Anda telah masuk ke sistem.");
+                
+                // Kembalikan tombol seperti semula
+                btn.innerText = teksAsli;
+                btn.disabled = false;
+            }, 800); // Jeda visual 0.8 detik agar terasa natural
         }
-
-        function verifikasiOTP() {
-            localStorage.setItem("userName", dataSementara.nama);
-            localStorage.setItem("userPhone", dataSementara.hp);
-            localStorage.setItem("userEmail", dataSementara.email);
-            localStorage.setItem("userAlamat", dataSementara.alamat);
-            
-            if(typeof kirimDataUserBaru === "function") { kirimDataUserBaru(dataSementara.nama, dataSementara.hp); }
-            
-            tutupSemuaModal();
-            
-            let jam = new Date().getHours();
-            let sapaan = "Selamat Malam";
-            if(jam >= 4 && jam < 11) sapaan = "Selamat Pagi";
-            else if(jam >= 11 && jam < 15) sapaan = "Selamat Siang";
-            else if(jam >= 15 && jam < 18) sapaan = "Selamat Sore";
-                
-            document.getElementById("greetingSub").innerHTML = `<i class="fas fa-sun"></i> ${sapaan},`;
-            document.getElementById("greetingName").innerHTML = dataSementara.nama + " 👋";
-            
-            alert("Verifikasi Berhasil! Akun Anda telah aman.");
-        }
-
         // LOGIKA PEMICU INSTALL PWA
         let deferredPromptUtama;
         window.addEventListener('beforeinstallprompt', (e) => {
