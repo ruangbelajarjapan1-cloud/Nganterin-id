@@ -1,5 +1,5 @@
 // Naikkan versi setiap kali Anda mengubah HTML/CSS/JS agar memori lama terhapus
-const CACHE_NAME = "nganterin-v5"; 
+const CACHE_NAME = "boyolali-app-v6";
 
 const urlsToCache = [
   "./",
@@ -9,9 +9,20 @@ const urlsToCache = [
   "./send.html",
   "./mart.html",
   "./driver.html",
+  "./daftar-driver.html",
+  "./admin.html",
   "./riwayat.html",
+  "./receipt.html",
   "./pesan.html",
-  "./profil.html"
+  "./profil.html",
+  "./topup.html",
+  "./donasi.html",
+  "./lainnya.html",
+  "./pulsa.html",
+  "./tiket.html",
+  "./app.js",
+  "./driver.js",
+  "./manifest.json"
 ];
 
 // Install Service Worker dan simpan file ke memori HP (Cache)
