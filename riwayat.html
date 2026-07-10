@@ -61,20 +61,19 @@
         <div id="mapTracking"></div>
 
         <div class="status-card">
-            <div class="driver-info">
+            <div class="driver-info" id="driverInfoBox" style="display: none;">
                 <div class="driver-avatar"><i class="fas fa-user-circle"></i></div>
                 <div class="driver-detail">
-                    <h4>Agus Setiawan</h4>
-                    <p><i class="fas fa-star" style="color: var(--accent);"></i> 4.9 (Honda Vario)</p>
-                    <div class="driver-plate">AD 1234 XX</div>
+                    <h4 id="namaDriverTampil">Mencari driver...</h4>
+                    <p id="layananTampil"><i class="fas fa-star" style="color: var(--accent);"></i> -</p>
                 </div>
             </div>
             <div class="order-status">
-                <h3 id="teksStatus">Driver Menuju Lokasi Jemput</h3>
-                <p>Estimasi tiba: 5 Menit</p>
+                <h3 id="teksStatus">Menunggu Driver Menerima Pesanan...</h3>
+                <p id="detailPesanan">-</p>
             </div>
-            
-            <button onclick="pesananSelesai()" style="width: 100%; margin-top: 20px; padding: 10px; border-radius: 8px; background: #D1FAE5; color: #059669; border: none; font-weight: bold;">Simulasi: Pesanan Selesai</button>
+
+            <button id="btnSelesai" onclick="pesananSelesai()" style="display:none; width: 100%; margin-top: 20px; padding: 10px; border-radius: 8px; background: #D1FAE5; color: #059669; border: none; font-weight: bold;">Tandai Pesanan Selesai</button>
         </div>
 
         <div class="overlay" id="ratingOverlay">
@@ -104,18 +103,27 @@
     </div>
 
     <script>
-        // Inisialisasi Peta Pelacakan Statis (Leaflet Gratis)
+        // Inisialisasi Peta Pelacakan (Leaflet)
         let map = L.map('mapTracking', {zoomControl: false, dragging: false}).setView([-7.5333, 110.6000], 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        
-        // Marker Driver (Warna Biru)
-        let driverMarker = L.circleMarker([-7.5333, 110.6000], {color: '#0F4C81', radius: 8, fillOpacity: 1}).addTo(map);
-        
-        // Marker Pelanggan (Warna Merah)
-        let custMarker = L.circleMarker([-7.5400, 110.6050], {color: '#E53E3E', radius: 8, fillOpacity: 1}).addTo(map);
-        
-        // Tarik Garis Rute Sementara
-        L.polyline([driverMarker.getLatLng(), custMarker.getLatLng()], {color: '#0F4C81', weight: 3, dashArray: '5, 5'}).addTo(map);
+
+        let driverMarker = null;
+        let custMarker = null;
+        let garisRute = null;
+
+        function perbaruiPetaDriver(lat, lng) {
+            if (driverMarker) {
+                driverMarker.setLatLng([lat, lng]);
+            } else {
+                driverMarker = L.circleMarker([lat, lng], {color: '#0F4C81', radius: 8, fillOpacity: 1}).addTo(map);
+            }
+            map.panTo([lat, lng]);
+
+            if (custMarker) {
+                if (garisRute) map.removeLayer(garisRute);
+                garisRute = L.polyline([driverMarker.getLatLng(), custMarker.getLatLng()], {color: '#0F4C81', weight: 3, dashArray: '5, 5'}).addTo(map);
+            }
+        }
 
         // LOGIKA RATING BINTANG
         let ratingDipilih = 0;
@@ -123,18 +131,24 @@
             ratingDipilih = jumlahBintang;
             let stars = document.getElementById("starContainer").children;
             for (let i = 0; i < stars.length; i++) {
-                if (i < jumlahBintang) {
-                    stars[i].classList.add("active");
-                } else {
-                    stars[i].classList.remove("active");
-                }
+                if (i < jumlahBintang) stars[i].classList.add("active");
+                else stars[i].classList.remove("active");
             }
         }
 
-        function pesananSelesai() {
+        let barisPesananAktif = null;
+        let intervalCekStatus = null;
+        let intervalCekLokasi = null;
+
+        async function pesananSelesai() {
+            if (barisPesananAktif && typeof selesaikanOrderServer === "function") {
+                await selesaikanOrderServer(barisPesananAktif);
+            }
             document.getElementById("teksStatus").innerText = "Pesanan Telah Selesai";
             document.getElementById("teksStatus").style.color = "#059669";
             document.getElementById("ratingOverlay").style.display = "flex";
+            if (intervalCekStatus) clearInterval(intervalCekStatus);
+            if (intervalCekLokasi) clearInterval(intervalCekLokasi);
         }
 
         function kirimRating() {
@@ -142,11 +156,70 @@
                 alert("Mohon berikan bintang terlebih dahulu.");
                 return;
             }
-            // Logika untuk menembak data ke Google Sheets bisa dimasukkan ke sini (Memanggil fungsi dari app.js)
             alert("Terima kasih! Penilaian " + ratingDipilih + " bintang Anda sangat membantu ekosistem UMKM lokal kita.");
             document.getElementById("ratingOverlay").style.display = "none";
-            window.location.href = "receipt.html"; // Arahkan ke setruk digital yang fit A4
+            localStorage.removeItem("pesananAktifBaris");
+            window.location.href = "receipt.html";
         }
+
+        // ============================================================
+        // AMBIL STATUS PESANAN ASLI DARI SERVER (POLLING)
+        // ============================================================
+        async function cekStatusPesanan() {
+            const hasil = await ambilStatusPesanan(barisPesananAktif);
+            if (hasil.status !== "sukses") return;
+
+            document.getElementById("detailPesanan").innerText =
+                `${hasil.layanan} • ${hasil.harga} • ${hasil.metode}`;
+
+            if (hasil.statusPesanan === "Menunggu Konfirmasi") {
+                document.getElementById("teksStatus").innerText = "Menunggu Driver Menerima Pesanan...";
+                document.getElementById("driverInfoBox").style.display = "none";
+                document.getElementById("btnSelesai").style.display = "none";
+            } else if (hasil.statusPesanan === "Diproses") {
+                document.getElementById("teksStatus").innerText = "Driver Menuju Lokasi Anda";
+                document.getElementById("namaDriverTampil").innerText = hasil.namaDriver || "Driver";
+                document.getElementById("layananTampil").innerText = hasil.layanan;
+                document.getElementById("driverInfoBox").style.display = "flex";
+                document.getElementById("btnSelesai").style.display = "block";
+
+                // Pasang marker pelanggan (posisi kira-kira, karena kita tidak minta GPS pelanggan di sini)
+                if (!custMarker) {
+                    let pusat = map.getCenter();
+                    custMarker = L.circleMarker([pusat.lat, pusat.lng], {color: '#E53E3E', radius: 8, fillOpacity: 1}).addTo(map);
+                }
+
+                // Mulai lacak lokasi driver kalau belum
+                if (!intervalCekLokasi && hasil.waDriver) {
+                    cekLokasiDriver(hasil.waDriver);
+                    intervalCekLokasi = setInterval(() => cekLokasiDriver(hasil.waDriver), 8000);
+                }
+            } else if (hasil.statusPesanan === "Selesai") {
+                document.getElementById("teksStatus").innerText = "Pesanan Telah Selesai";
+                document.getElementById("teksStatus").style.color = "#059669";
+                if (intervalCekStatus) clearInterval(intervalCekStatus);
+                if (intervalCekLokasi) clearInterval(intervalCekLokasi);
+            }
+        }
+
+        async function cekLokasiDriver(waDriver) {
+            const lokasi = await ambilLokasiDriver(waDriver);
+            if (lokasi.status === "sukses") {
+                perbaruiPetaDriver(lokasi.lat, lokasi.lng);
+            }
+        }
+
+        window.addEventListener('load', function () {
+            barisPesananAktif = localStorage.getItem("pesananAktifBaris");
+            if (!barisPesananAktif) {
+                document.getElementById("teksStatus").innerText = "Tidak ada pesanan aktif saat ini.";
+                document.getElementById("detailPesanan").innerText = "Buat pesanan baru dari halaman Beranda.";
+                return;
+            }
+            cekStatusPesanan();
+            intervalCekStatus = setInterval(cekStatusPesanan, 6000);
+        });
     </script>
+    <script src="app.js"></script>
 </body>
 </html>
