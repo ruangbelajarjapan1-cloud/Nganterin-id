@@ -68,10 +68,10 @@
     <div class="app-container">
         <div class="driver-header">
             <div class="driver-profile">
-                <img src="https://ui-avatars.com/api/?name=Agus&background=0F4C81&color=fff" style="width: 40px; border-radius: 50%;">
+                <img id="fotoDriver" src="https://ui-avatars.com/api/?name=Driver&background=0F4C81&color=fff" style="width: 40px; border-radius: 50%;">
                 <div>
-                    <h3>Agus Setiawan</h3>
-                    <p>Saldo Deposit: Rp 75.000</p>
+                    <h3 id="namaDriverHeader">Mitra Driver</h3>
+                    <p>Ketuk untuk mulai online</p>
                 </div>
             </div>
             <div class="toggle-container">
@@ -98,15 +98,16 @@
 
         <a href="index.html" class="fab-home"><i class="fas fa-home"></i></a>
 
-        <!-- Pop Up Pesanan Masuk (Sembunyikan nomor WA Pelanggan demi privasi) -->
+        <!-- Pop Up Pesanan Masuk (data diisi otomatis oleh driver.js dari server) -->
         <div class="order-modal" id="orderModal">
             <h2>Pesanan Baru Masuk!</h2>
             <div class="route-detail">
-                <div class="r-item"><i class="fas fa-dot-circle"></i> Alun-alun Boyolali</div>
-                <div class="r-item"><i class="fas fa-map-marker-alt" style="color: #E53E3E;"></i> Terminal Baru</div>
-                <div class="r-item" style="margin-top: 10px; font-weight: 600; color: #059669;"><i class="fas fa-money-bill-wave"></i> Pembayaran: Tunai</div>
+                <div class="r-item"><i class="fas fa-tag"></i> Layanan: <span id="orderLayanan">-</span></div>
+                <div class="r-item"><i class="fas fa-dot-circle"></i> <span id="orderJemput">-</span></div>
+                <div class="r-item"><i class="fas fa-map-marker-alt" style="color: #E53E3E;"></i> <span id="orderTujuan">-</span></div>
+                <div class="r-item" style="margin-top: 10px; font-weight: 600; color: #059669;"><i class="fas fa-money-bill-wave"></i> Pembayaran: <span id="orderMetode">-</span></div>
             </div>
-            <div class="price-tag">Rp 12.000</div>
+            <div class="price-tag" id="orderHarga">Rp 0</div>
             <div class="btn-group">
                 <button class="btn-reject" onclick="abaikanOrder()">Abaikan</button>
                 <button class="btn-accept" onclick="terimaOrder()">Terima Order</button>
@@ -120,51 +121,32 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         let driverMarker;
 
-        // Simulasi Titik GPS Driver
+        // Titik GPS Driver asli (dipanggil ulang oleh driver.js setiap lokasi diperbarui)
+        window.updateDriverMarker = function (lat, lng) {
+            map.setView([lat, lng], 16);
+            if (driverMarker) {
+                driverMarker.setLatLng([lat, lng]);
+            } else {
+                driverMarker = L.marker([lat, lng]).addTo(map);
+            }
+        };
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
-                let lat = position.coords.latitude;
-                let lng = position.coords.longitude;
-                map.setView([lat, lng], 16);
-                driverMarker = L.marker([lat, lng]).addTo(map);
+                window.updateDriverMarker(position.coords.latitude, position.coords.longitude);
             });
         }
 
-        function ubahStatus(checkbox) {
-            let teksStatus = document.getElementById("statusText");
-            if (checkbox.checked) {
-                teksStatus.innerText = "Online";
-                teksStatus.style.color = "#059669";
-                
-                // Simulasi pesanan masuk setelah online 3 detik
-                setTimeout(() => {
-                    document.getElementById("orderModal").style.display = "block";
-                }, 3000);
-            } else {
-                teksStatus.innerText = "Offline";
-                teksStatus.style.color = "var(--text-muted)";
-                document.getElementById("orderModal").style.display = "none";
+        // Tampilkan nama driver di header jika sudah pernah isi identitas
+        window.addEventListener('load', function () {
+            let nama = localStorage.getItem("driverName");
+            if (nama) {
+                document.getElementById("namaDriverHeader").innerText = nama;
+                document.getElementById("fotoDriver").src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(nama) + "&background=0F4C81&color=fff";
             }
-        }
-
-        function abaikanOrder() {
-            document.getElementById("orderModal").style.display = "none";
-        }
-
-        function terimaOrder() {
-            document.getElementById("orderModal").style.display = "none";
-            
-            // Logika Privasi: Tawarkan kontak WA setelah pesanan sah diterima
-            let konfirmasi = confirm("Pesanan diterima! Rute telah diaktifkan.\n\nApakah Anda ingin langsung mengirim pesan otomatis ke pelanggan bahwa Anda sedang meluncur?");
-            
-            if(konfirmasi) {
-                // Anggap ini membaca data WA dari server secara aman di latar belakang
-                let noWAPelanggan = "628123456789"; 
-                let pesanTemplate = "Halo kak, saya Agus dari Boyolali App. Saya sedang meluncur ke lokasi jemput ya.";
-                window.open(`https://wa.me/${noWAPelanggan}?text=${encodeURIComponent(pesanTemplate)}`, "_blank");
-            }
-        }
+        });
     </script>
     <script src="app.js"></script>
+    <script src="driver.js"></script>
 </body>
 </html>
