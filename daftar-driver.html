@@ -168,16 +168,35 @@
     </div>
 
     <script>
-        function submitDaftar() {
+        async function submitDaftar() {
             let nama = document.getElementById("driverName").value;
             let wa = document.getElementById("driverPhone").value;
+            let kendaraan = document.getElementById("driverVehicle").value;
             let plat = document.getElementById("driverPlate").value;
 
             if(nama === "" || wa === "" || plat === "") {
                 alert("Mohon lengkapi seluruh data pendaftaran Anda.");
                 return;
             }
-            document.getElementById("successModal").style.display = "flex";
+
+            let btn = document.querySelector(".btn-submit");
+            let teksAsli = btn.innerText;
+            btn.innerText = "Mengirim...";
+            btn.disabled = true;
+
+            const berhasil = await daftarDriverBaru(nama, wa, kendaraan, plat);
+
+            btn.innerText = teksAsli;
+            btn.disabled = false;
+
+            if (berhasil) {
+                // Simpan identitas driver secara lokal agar bisa langsung dipakai di driver.html
+                localStorage.setItem("driverName", nama);
+                localStorage.setItem("driverWA", wa);
+                document.getElementById("successModal").style.display = "flex";
+            } else {
+                alert("Gagal mengirim pendaftaran. Cek koneksi internet Anda, lalu coba lagi.");
+            }
         }
 
         function tutupModal() {
@@ -185,7 +204,8 @@
             window.location.href = "index.html";
         }
     </script>
-    
+
+    <script src="app.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
