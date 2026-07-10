@@ -67,7 +67,7 @@
                 <div class="merchant-info">
                     <h3>Ayam Penyet Khas Daerah</h3>
                     <p><i class="fas fa-star" style="color: #F59E0B;"></i> 4.8 | Jarak: 1.2 km</p>
-                    <button class="btn-add">Tambah Rp 25.000</button>
+                    <button class="btn-add" onclick="toggleItem(this, 'Ayam Penyet Khas Daerah', 25000)">Tambah Rp 25.000</button>
                 </div>
             </div>
             <div class="merchant-card">
@@ -75,7 +75,7 @@
                 <div class="merchant-info">
                     <h3>Sate Sapi Pak Manto</h3>
                     <p><i class="fas fa-star" style="color: #F59E0B;"></i> 4.9 | Jarak: 2.5 km</p>
-                    <button class="btn-add">Tambah Rp 35.000</button>
+                    <button class="btn-add" onclick="toggleItem(this, 'Sate Sapi Pak Manto', 35000)">Tambah Rp 35.000</button>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
         <div class="checkout-bar">
             <div class="checkout-info">
                 <p style="font-size: 11px; color: var(--text-muted);">Total Pesanan</p>
-                <h4>Rp 60.000</h4>
+                <h4 id="totalHarga">Rp 0</h4>
             </div>
             <button class="btn-checkout" onclick="prosesPesan()">Pesan Sekarang</button>
         </div>
@@ -100,52 +100,70 @@
     </div>
 
     <script>
+        // KERANJANG BELANJA MAKANAN
+        let keranjang = {}; // { namaMenu: harga }
+
+        function toggleItem(btn, namaMenu, harga) {
+            if (keranjang[namaMenu]) {
+                delete keranjang[namaMenu];
+                btn.innerText = "Tambah Rp " + harga.toLocaleString('id-ID');
+                btn.style.background = "";
+            } else {
+                keranjang[namaMenu] = harga;
+                btn.innerText = "✓ Ditambahkan";
+                btn.style.background = "var(--primary)";
+                btn.style.color = "#fff";
+            }
+            perbaruiTotal();
+        }
+
+        function perbaruiTotal() {
+            let total = Object.values(keranjang).reduce((a, b) => a + b, 0);
+            document.getElementById("totalHarga").innerText = "Rp " + total.toLocaleString('id-ID');
+        }
+
         function prosesPesan() {
+            if (Object.keys(keranjang).length === 0) {
+                alert("Pilih menu terlebih dahulu ya!");
+                return;
+            }
             let user = localStorage.getItem("userName");
-            if(user) {
-                alert("Memproses pesanan untuk " + user + "...\n(Data akan dikirim ke aplikasi mitra pengemudi)");
+            if (user) {
+                kirimPesananMakanan();
             } else {
                 document.getElementById("overlay").classList.add("active");
                 document.getElementById("loginSheet").classList.add("active");
             }
         }
+
+        function kirimPesananMakanan() {
+            let total = Object.values(keranjang).reduce((a, b) => a + b, 0);
+            let daftarMenu = Object.keys(keranjang).join(", ");
+            let alamat = localStorage.getItem("userAlamat") || "Alamat belum diisi (lengkapi di halaman Akun)";
+            kirimPesanan(
+                "Makanan (UMKM) - Tunai",
+                daftarMenu,          // dikirim sebagai "jemput" = lokasi/jenis pesanan
+                alamat,               // dikirim sebagai "tujuan" = alamat antar
+                "Rp " + total.toLocaleString('id-ID')
+            );
+        }
+
         function tutupLogin() {
             document.getElementById("overlay").classList.remove("active");
             document.getElementById("loginSheet").classList.remove("active");
         }
+
         function simpanData() {
             let nama = document.getElementById("regName").value;
             let hp = document.getElementById("regPhone").value;
             if(nama === "" || hp === "") { alert("Mohon lengkapi nama dan nomor WhatsApp."); return; }
             localStorage.setItem("userName", nama);
             localStorage.setItem("userPhone", hp);
+            kirimDataUserBaru(nama, hp, "", "");
             tutupLogin();
-            alert("Berhasil! Meneruskan pesanan Anda ke mitra kuliner...");
+            // Lanjutkan otomatis ke proses kirim pesanan setelah login
+            kirimPesananMakanan();
         }
-        function prosesDaftar() {
-    let nama = document.getElementById("regName").value;
-    let hp = document.getElementById("regPhone").value;
-    
-    if (nama === "" || hp === "") { 
-        alert("Mohon lengkapi nama dan nomor WhatsApp."); 
-        return; 
-    }
-    
-    // 1. Simpan di memori HP
-    localStorage.setItem("userName", nama);
-    localStorage.setItem("userPhone", hp);
-    
-    // 2. KIRIM DATA KE GOOGLE SHEETS (Memanggil fungsi baru di app.js)
-    kirimDataUserBaru(nama, hp);
-    
-    tutupLogin();
-    
-    // Perbarui teks nama di beranda
-    let elemenNama = document.getElementById("greetingName");
-    if(elemenNama) {
-        elemenNama.innerHTML = nama + " <i class='fas fa-chevron-down' style='font-size: 12px; margin-left: 5px;'></i>";
-    }
-}
     </script>
 
     <!-- File app.js tetap dipertahankan seperti instruksi sebelumnya -->
