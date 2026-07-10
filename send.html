@@ -54,20 +54,20 @@
         <div class="form-section">
             <div class="card">
                 <h3><i class="fas fa-box-open" style="color: var(--primary);"></i> Detail Barang</h3>
-                <div class="input-box"><input type="text" placeholder="Apa isi paketnya? (Cth: Dokumen, Baju)"></div>
-                <div class="input-box"><input type="text" placeholder="Estimasi Berat (Cth: 1 Kg)"></div>
+                <div class="input-box"><input type="text" id="isiPaket" placeholder="Apa isi paketnya? (Cth: Dokumen, Baju)"></div>
+                <div class="input-box"><input type="text" id="beratPaket" placeholder="Estimasi Berat (Cth: 1 Kg)"></div>
             </div>
 
             <div class="card">
                 <h3><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Lokasi Penjemputan</h3>
-                <div class="input-box"><textarea rows="2" placeholder="Alamat lengkap ambil barang..."></textarea></div>
-                <div class="input-box"><input type="text" placeholder="Nama Pengirim & No HP"></div>
+                <div class="input-box"><textarea rows="2" id="alamatJemput" placeholder="Alamat lengkap ambil barang..."></textarea></div>
+                <div class="input-box"><input type="text" id="pengirim" placeholder="Nama Pengirim & No HP"></div>
             </div>
 
             <div class="card">
                 <h3><i class="fas fa-flag-checkered" style="color: #FF3D00;"></i> Tujuan Pengiriman</h3>
-                <div class="input-box"><textarea rows="2" placeholder="Alamat lengkap penerima..."></textarea></div>
-                <div class="input-box"><input type="text" placeholder="Nama Penerima & No HP"></div>
+                <div class="input-box"><textarea rows="2" id="alamatTujuan" placeholder="Alamat lengkap penerima..."></textarea></div>
+                <div class="input-box"><input type="text" id="penerima" placeholder="Nama Penerima & No HP"></div>
             </div>
 
             <button class="btn-order" onclick="prosesKirim()">Hitung Ongkir & Pesan</button>
@@ -86,23 +86,57 @@
 
     <script>
         function prosesKirim() {
-            if(localStorage.getItem("userName")) { alert("Memproses pesanan kurir..."); } 
-            else {
+            let isiPaket = document.getElementById("isiPaket").value.trim();
+            let jemput = document.getElementById("alamatJemput").value.trim();
+            let tujuan = document.getElementById("alamatTujuan").value.trim();
+            if (isiPaket === "" || jemput === "" || tujuan === "") {
+                alert("Mohon lengkapi detail barang, alamat jemput, dan alamat tujuan.");
+                return;
+            }
+            if (localStorage.getItem("userName")) {
+                kirimPesananKurir();
+            } else {
                 document.getElementById("overlay").classList.add("active");
                 document.getElementById("loginSheet").classList.add("active");
             }
         }
+
+        function kirimPesananKurir() {
+            let isiPaket = document.getElementById("isiPaket").value.trim();
+            let berat = document.getElementById("beratPaket").value.trim() || "-";
+            let jemput = document.getElementById("alamatJemput").value.trim();
+            let tujuan = document.getElementById("alamatTujuan").value.trim();
+
+            // Tarif dasar kurir sederhana: Rp 8.000 (bisa disesuaikan)
+            let harga = "Rp 8.000";
+
+            kirimPesanan(
+                `Kirim Barang (${isiPaket}, ${berat}) - Tunai`,
+                jemput,
+                tujuan,
+                harga
+            );
+        }
+
         function tutupLogin() {
             document.getElementById("overlay").classList.remove("active");
             document.getElementById("loginSheet").classList.remove("active");
         }
+
         function simpanData() {
             let nama = document.getElementById("regName").value, hp = document.getElementById("regPhone").value;
-            if(nama && hp) { localStorage.setItem("userName", nama); localStorage.setItem("userPhone", hp); tutupLogin(); alert("Berhasil! Meneruskan pesanan..."); }
-            else { alert("Lengkapi data dulu ya!"); }
+            if(nama && hp) {
+                localStorage.setItem("userName", nama);
+                localStorage.setItem("userPhone", hp);
+                kirimDataUserBaru(nama, hp, "", "");
+                tutupLogin();
+                kirimPesananKurir();
+            } else {
+                alert("Lengkapi data dulu ya!");
+            }
         }
     </script>
 
-    ⁠<script src="app.js"></script>⁠
+    <script src="app.js"></script>
 </body>
 </html>
