@@ -78,26 +78,26 @@
         <div class="stat-grid">
             <div class="stat-card">
                 <div class="stat-icon blue"><i class="fas fa-chart-line"></i></div>
-                <div class="stat-info"><p>Total Pendapatan</p><h3>Rp 4.250.000</h3></div>
+                <div class="stat-info"><p>Total Pendapatan</p><h3 id="statPendapatan">Memuat...</h3></div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon orange"><i class="fas fa-utensils"></i></div>
-                <div class="stat-info"><p>Transaksi UMKM</p><h3>128 Pesanan</h3></div>
+                <div class="stat-info"><p>Total Transaksi</p><h3 id="statTransaksi">Memuat...</h3></div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon green"><i class="fas fa-motorcycle"></i></div>
-                <div class="stat-info"><p>Driver Aktif</p><h3>45 Mitra</h3></div>
+                <div class="stat-info"><p>Driver Aktif</p><h3 id="statDriver">Memuat...</h3></div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon blue"><i class="fas fa-users"></i></div>
-                <div class="stat-info"><p>Pengguna Baru</p><h3>12 Pengguna</h3></div>
+                <div class="stat-info"><p>Total Pengguna</p><h3 id="statUser">Memuat...</h3></div>
             </div>
         </div>
 
         <div class="data-section">
             <div class="data-header">
-                <h2>Pantauan Pesanan Langsung (Real-Time)</h2>
-                <button style="padding: 8px 15px; background: var(--primary-light); color: var(--primary); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Segarkan Data</button>
+                <h2>Pantauan Pesanan Langsung</h2>
+                <button id="btnSegarkan" style="padding: 8px 15px; background: var(--primary-light); color: var(--primary); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Segarkan Data</button>
             </div>
             <table>
                 <thead>
@@ -110,52 +110,72 @@
                     </tr>
                 </thead>
                 <tbody id="tabelPesanan">
-                    <tr>
-                        <td>#BYL-1029</td>
-                        <td>Budi Santoso</td>
-                        <td>Transportasi (QRIS)</td>
-                        <td>Rp 12.000</td>
-                        <td><span class="badge success">Selesai</span></td>
-                    </tr>
-                    <tr>
-                        <td>#BYL-1030</td>
-                        <td>Siti Aminah</td>
-                        <td>Makanan (Tunai)</td>
-                        <td>Rp 45.000</td>
-                        <td><span class="badge active">Proses Driver</span></td>
-                    </tr>
-                    <tr>
-                        <td>#BYL-1031</td>
-                        <td>Rina M.</td>
-                        <td>Belanja (Tunai)</td>
-                        <td>Rp 80.000</td>
-                        <td><span class="badge pending">Menunggu Driver</span></td>
-                    </tr>
+                    <tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Memuat data...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
     <script>
-        // Logika Sederhana untuk Klik Menu Sidebar
+        function badgeUntukStatus(status) {
+            if (status === "Selesai") return `<span class="badge success">Selesai</span>`;
+            if (status === "Diproses") return `<span class="badge active">Proses Driver</span>`;
+            return `<span class="badge pending">Menunggu Driver</span>`;
+        }
+
+        async function muatDataAdmin() {
+            const btn = document.getElementById("btnSegarkan");
+            const teksAsli = btn.innerText;
+            btn.innerText = "Memuat...";
+            btn.disabled = true;
+
+            const data = await ambilDataAdmin();
+
+            btn.innerText = teksAsli;
+            btn.disabled = false;
+
+            if (data.status !== "sukses") {
+                document.getElementById("tabelPesanan").innerHTML =
+                    `<tr><td colspan="5" style="text-align:center; color: #E53E3E;">Gagal memuat data. Cek SCRIPT_URL di app.js.</td></tr>`;
+                return;
+            }
+
+            document.getElementById("statPendapatan").innerText = "Rp " + data.totalPendapatan.toLocaleString('id-ID');
+            document.getElementById("statTransaksi").innerText = data.totalTransaksi + " Pesanan";
+            document.getElementById("statDriver").innerText = data.driverAktif + " Mitra";
+            document.getElementById("statUser").innerText = data.penggunaBaru + " Pengguna";
+
+            const tbody = document.getElementById("tabelPesanan");
+            if (!data.recentOrders || data.recentOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Belum ada transaksi.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.recentOrders.map(o => `
+                <tr>
+                    <td>#BYL-${o.id}</td>
+                    <td>${o.nama || '-'}</td>
+                    <td>${o.layanan || '-'}</td>
+                    <td>${o.harga || '-'}</td>
+                    <td>${badgeUntukStatus(o.status)}</td>
+                </tr>
+            `).join('');
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
+            muatDataAdmin();
+            document.getElementById("btnSegarkan").addEventListener("click", muatDataAdmin);
+
+            // Segarkan otomatis tiap 15 detik agar "real-time"
+            setInterval(muatDataAdmin, 15000);
+
             const menuLinks = document.querySelectorAll(".nav-link");
-            
             menuLinks.forEach(link => {
                 link.addEventListener("click", function(e) {
-                    // Abaikan jika tombol yang diklik adalah tombol "Keluar"
-                    if(this.innerText.includes("Keluar")) return; 
-                    
-                    e.preventDefault(); // Mencegah halaman melompat
-                    
-                    // Hapus class 'active' dari semua menu
+                    if(this.innerText.includes("Keluar")) return;
+                    e.preventDefault();
                     menuLinks.forEach(l => l.classList.remove("active"));
-                    
-                    // Tambahkan class 'active' ke menu yang diklik
                     this.classList.add("active");
-                    
-                    // Simulasi pemuatan data
-                    let namaMenu = this.innerText.trim();
-                    alert("Sedang memuat data untuk menu: " + namaMenu + "...\n\n(Ini akan terhubung ke Google Sheets di tahap selanjutnya)");
+                    // Saat ini semua menu menampilkan data yang sama (tabel pesanan).
+                    // Untuk memisah per menu (UMKM/Driver/Pelanggan), tambahkan sheet & action baru di code.gs.
                 });
             });
         });
