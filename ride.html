@@ -102,6 +102,7 @@
             <button class="btn-action" id="btnMain" onclick="prosesLangkah()">Set Lokasi Jemput</button>
         </div>
 
+       <!-- MODAL PILIHAN PEMBAYARAN -->
         <div class="overlay" id="paymentOverlay" onclick="tutupPayment()"></div>
         <div class="payment-sheet" id="paymentSheet">
             <div class="sheet-handle"></div>
@@ -111,24 +112,19 @@
                 <div class="pay-icon"><i class="fas fa-money-bill-wave" style="color: #059669;"></i></div>
                 <div class="pay-detail">
                     <h4>Uang Tunai (Cash)</h4>
-                    <p>Bayar langsung ke pengemudi</p>
+                    <p>Bayar langsung ke pengemudi di tujuan</p>
                 </div>
                 <div class="pay-radio"></div>
             </div>
 
+            <!-- Teks QRIS diubah agar jelas dibayar ke Driver -->
             <div class="payment-option" onclick="pilihMetode('QRIS', this)">
                 <div class="pay-icon"><i class="fas fa-qrcode" style="color: var(--primary);"></i></div>
                 <div class="pay-detail">
                     <h4>QRIS (Semua E-Wallet)</h4>
-                    <p>GoPay, OVO, Dana, M-Banking, dll.</p>
+                    <p>Scan barcode milik pengemudi di tujuan</p>
                 </div>
                 <div class="pay-radio"></div>
-            </div>
-
-            <div id="qrisArea" style="display: none; text-align: center; margin-top: 20px; padding: 20px; background: var(--bg-gray); border-radius: 12px; border: 1px dashed #ccc;">
-                <p style="font-size: 13px; color: var(--text-dark); font-weight: 600; margin-bottom: 10px;">Scan QRIS Perusahaan:</p>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS" style="width: 150px; height: 150px; border-radius: 8px; margin-bottom: 10px;">
-                <p style="font-size: 11px; color: var(--text-muted);">Total: <strong style="color: var(--primary);" id="tagihanQRIS">Rp 0</strong></p>
             </div>
 
             <button class="btn-action" style="margin-top: 20px;" onclick="konfirmasiPesananFinal()">Konfirmasi & Pesan</button>
@@ -231,10 +227,16 @@
                         L.circleMarker(titikJemput, {color: '#0F4C81', fillOpacity: 1, radius: 6}).addTo(map);
                         L.marker(titikTujuan).addTo(map);
 
-                        // PERHITUNGAN HARGA 
-                        let tarifDasar = 5000;
-                        let tarifPerKm = 3000;
+                       // PERHITUNGAN HARGA BERSAING (Di bawah Gojek)
+                        // Tarif minimum (jarak dekat): Rp 7.000
+                        let tarifDasar = 7000; 
+                        // Tarif tambahan per kilometer: Rp 2.000
+                        let tarifPerKm = 2000; 
+                        
                         let totalHarga = tarifDasar + Math.round(jarakKm * tarifPerKm);
+                        
+                        // Opsional: Buat pembulatan ke atas (misal Rp 11.200 jadi Rp 11.500 atau Rp 12.000)
+                        // totalHarga = Math.ceil(totalHarga / 500) * 500;
                         hargaFinalSistem = `Rp ${totalHarga.toLocaleString('id-ID')}`;
                         
                         document.getElementById("teksJarak").innerText = `Jarak Tempuh: ${jarakKm} km`;
@@ -284,12 +286,6 @@
             metodePembayaran = metode;
             document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
             elemen.classList.add('active');
-
-            if(metode === "QRIS") {
-                document.getElementById('qrisArea').style.display = "block";
-            } else {
-                document.getElementById('qrisArea').style.display = "none";
-            }
         }
 
         function konfirmasiPesananFinal() {
